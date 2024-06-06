@@ -121,6 +121,17 @@ html(lang="es")
                             input(type="text", name="grade", placeholder="Grado")
                             input(type="text", name="name", placeholder="Nombre")
                             input(type="submit", name="btnAddNodo", value="Agregar Nodo")
+                .internal-container
+                    div#add-node-to-user
+                        h2 Asignar un Nodo a un Usuario
+                        form(id="formAddNodeToUser", action="adminActions/addNodetoUser" method="post")
+                            select(name="userSelect" id="userSelect")
+                                each user in userList
+                                    option(value=user.idUser) #{user.name}
+                            select(name="nodeSelect" id="nodeSelect")
+                                each node in nodesList
+                                    option(value=node.idNodo) #{node.name}
+                            input(type="submit", name="btnAsignNode", value="Asignar Nodo")
                 
         footer.footer 
             .footer-group1

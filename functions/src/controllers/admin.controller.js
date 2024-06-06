@@ -36,24 +36,36 @@ module.exports={
     //Function that shows all actions admin exclusive
     adminActions:(req,res)=>{
         const list = [];//create an empty array 
+        const nodesList = [];//create an empty array 
         //Get all users from DB
         readUser.query('SELECT * FROM Usuario ', (req,result)=>{
-        //Fill the array with all the users info 
-        for (let i = 0; i < result.length; i++) {
-            //One user => one element of the array (i)
-            list[i] = {
-                // var in js array : var in result from DB query
-                idUser: result[i].idUsuario,
-                name: result[i].nombre,
-                lastName: result[i].apellido,
-                email: result[i].email,
-                adminFlag: result[i].bandera_administrador,
-                node: result[i].nodo,
-                password: result[i].contrasenia
-            };
-        } 
-        //Render adminView.pug; {var-in-Pug:var-in-Js}
-        res.render('adminView', { userList: list }); 
+            //Fill the array with all the users info 
+            for (let i = 0; i < result.length; i++) {
+                //One user => one element of the array (i)
+                list[i] = {
+                    // var in js array : var in result from DB query
+                    idUser: result[i].idUsuario,
+                    name: result[i].nombre,
+                    lastName: result[i].apellido,
+                    email: result[i].email,
+                    adminFlag: result[i].bandera_administrador,
+                    password: result[i].contrasenia
+                };
+            }
+                readUser.query('SELECT * FROM Nodo ', (req,resultNodo)=>{
+                    //Fill the array with all the users info 
+                    for (let i = 0; i < resultNodo.length; i++) {
+                        //One user => one element of the array (i)
+                        nodesList[i] = {
+                            // var in js array : var in result from DB query
+                            idNodo: resultNodo[i].idNodo,
+                            grade: resultNodo[i].grado,
+                            name: resultNodo[i].nombre
+                        };
+                    }
+                    //Render adminView.pug; {var-in-Pug:var-in-Js}
+                    res.render('adminView', { userList: list, nodesList:nodesList}); 
+                });
         });
         
     },
@@ -63,7 +75,7 @@ module.exports={
         //Create a constant that contains the info in the body of the request 
         const { name, lastName, lastName2, email, birthday, gender, adminFlag, node, password } = req.body;
         //Insert query into table Usuario
-        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador, nodo, contrasenia) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?);', [name, lastName, lastName2, email, birthday, gender, adminFlag, node, password ], (err, result) => {
+        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador, contrasenia) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [name, lastName, lastName2, email, birthday, gender, adminFlag, password ], (err, result) => {
             if (err) {
                 console.error(err);
                 res.status(500).send("Error al agregar usuario");
@@ -156,6 +168,19 @@ module.exports={
                 return;
             }
             res.redirect('user/adminActions');
+        })
+    },
+    addNode_to_User:(req,res)=>{
+        console.log(req.body);
+        const user = req.body.userSelect;
+        const node = req.body.nodeSelect;
+        readUser.query('INSERT INTO Usuario_tiene_Nodo (Usuario_idUsuario, Nodo_idNodo) VALUES (?, ?);', [user, node], (err, result)=>{
+            if (err) {
+                console.error(err);
+                res.status(500).send("Error al asignar nodo");
+                return;
+            }
+            res.redirect('/');
         })
     }
 

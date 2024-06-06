@@ -4,6 +4,7 @@ const session = require('express-session'); //for express sessions
 const path = require('path');
 const functions = require('firebase-functions');
 
+
 const app = express();//declare an express object (app)
 
 //Give the app json and url properties
@@ -12,9 +13,9 @@ app.use (express.urlencoded({extended:true}));
 
 app.use(session({
     secret: 'mySecret',
-    resave: true,
+    resave: false,
     saveUninitialized: true,
-    cookie: { secure: true } // Cambia a true si usas HTTPS
+    cookie: { secure: false } // Cambia a true si usas HTTPS
 }));
 
 //Assing pug functions to app

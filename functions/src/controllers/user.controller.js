@@ -1,14 +1,55 @@
 //Import express
 const express = require('express');
 const session = require('express-session'); //for express sessions
-const app = express(); //create an express object called app
 
+/*Import firebase auth
+const firebase = require('firebase');
+const firebaseui = require('firebaseui');
+
+// Initialize the FirebaseUI Widget using Firebase
+const ui = new firebaseui.auth.AuthUI(firebase.auth());
+var uiConfig = {
+    callbacks: {
+      signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+        // User successfully signed in.
+        // Return type determines whether we continue the redirect automatically
+        // or whether we leave that to developer to handle.
+        return true;
+      },
+      uiShown: function() {
+        // The widget is rendered.
+        // Hide the loader.
+        document.getElementById('loader').style.display = 'none';
+      }
+    },
+    // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+    signInFlow: 'popup',
+    signInSuccessUrl: '<url-to-redirect-to-on-success>',
+    signInOptions: [
+      // Leave the lines as is for the providers you want to offer your users.
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+      firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+      firebase.auth.GithubAuthProvider.PROVIDER_ID,
+      firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      firebase.auth.PhoneAuthProvider.PROVIDER_ID
+    ],
+    // Terms of service url.
+    tosUrl: '<your-tos-url>',
+    // Privacy policy url.
+    privacyPolicyUrl: '<your-privacy-policy-url>'
+  };*/
+
+const app = express(); //create an express object called app
+//Give the app json and url properties
 app.use(express.json());
+app.use (express.urlencoded({extended:true}));
+
 app.use(session({
     secret: 'mySecret',
-    resave: true,
+    resave: false,
     saveUninitialized: true,
-    cookie: { secure: true } // Cambia a true si usas HTTPS
+    cookie: { secure: false } // Cambia a true si usas HTTPS
 }));
 
 //Import obj readUser which contains the user model where we make the database connection
@@ -18,21 +59,15 @@ const readUser = require('../models/user.model');
 module.exports={
     registerUser:(req,res)=>{
         console.log("Estoy registrando");
-        const { name, last_name1, last_name2, email, birthday, gender, isAdmin, node, password } = req.body;
-        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador, nodo, contrasenia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);', [name, last_name1, last_name2, email, birthday, gender, isAdmin, node, password], (err,result)=>{
+        const { name, last_name1, last_name2, email, birthday, gender, isAdmin, password } = req.body;
+        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador, contrasenia) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [name, last_name1, last_name2, email, birthday, gender, isAdmin, password], (err,result)=>{
             if (err) {
                 console.error(err);
                 res.status(500).send("Error al agregar usuario");
                 return;
             }else{
-                readUser.query('SET @idUsuario = LAST_INSERT_ID();');
-                readUser.query('INSERT INTO Usuario_tiene_Nodo (Usuario_idUsuario, Nodo_idNodo) VALUES (@idUsuario,?)', [node], (err, result) => {
-                    if (err) {
-                        console.error(err);
-                        res.status(500).send("Error al agregar usuario");
-                        return;
-                    }
-                })
+                //readUser.query('SET @idUsuario = LAST_INSERT_ID();');
+                
             }
             res.redirect('/');
         });
@@ -56,11 +91,12 @@ module.exports={
                 //Save if is Admin in the session
                 req.session.isAdmin = result[0].bandera_administrador == 1;
                 req.session.idUsuario=result[0].idUsuario;
+                req.session.name=result[0].nombre;
                 const idUser = result[0].idUsuario;
                 console.log("Bienvenido, ingreso exitoso")
                 //res.status(200).send('Login successful');
                 //render the dashboardView.pug
-                showDashboard(res, idUser); //res is necessary to render the view; result is the object that contains the user info
+                showDashboard(req, res, idUser); //res is necessary to render the view; result is the object that contains the user info
                 
             }else{//failed login
                 res.status(401).send('Invalid credentials');
@@ -162,12 +198,12 @@ module.exports={
                         };   
                     
                 }//console.log(suminsitrosList);
-                res.render('dashboardView', {
+                /*res.render('dashboardView', {
                     usuario : userName, 
                     listMediciones :medicionesList, 
                     listSuministros:suminsitrosList,
                     esAdmin : esAdmin
-                });//pug:js
+                });//pug:js*/
             });
             
         });
@@ -187,9 +223,11 @@ function isAuthenticated(req, res, next) {
     }
 }
 
-function showDashboard(res, idUser){
+function showDashboard(req, res, idUser){
+    const userName=req.session.name;
+    const esAdmin=req.session.isAdmin;
     nodosList=[];
-    readUser.query('SELECT Nodo_idNodo FROM Usuario_tiene_Nodo WHERE Usuario_idUsuario=?; ',[idUser], (req,resNodos)=>{
+    readUser.query('SELECT Nodo_idNodo FROM Usuario_tiene_Nodo WHERE Usuario_idUsuario=?; ',[idUser], (request,resNodos)=>{
         for (let i = 0; i < resNodos.length; i++) {
             //One nodo => one element of the array (i)
             nodosList[i] = {
@@ -197,9 +235,59 @@ function showDashboard(res, idUser){
                 idNodo:resNodos[i].Nodo_idNodo
             };
         }//console.log(nodosList);
-        res.render('dashboardView', {listaNodos:nodosList});
+        res.render('dashboardView', {
+            userName:userName,
+            listaNodos:nodosList, 
+            esAdmin : esAdmin
+        });
     });
 }
+/*
+//Firebase Authentication Functions
+function signInWithEmailPassword() {
+    var email = "test@example.com";
+    var password = "hunter2";
+    // [START auth_signin_password]
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
+        var user = userCredential.user;
+        // ...
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+      });
+    // [END auth_signin_password]
+  }
+  
+  function signUpWithEmailPassword() {
+    var email = "test@example.com";
+    var password = "hunter2";
+    // [START auth_signup_password]
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in 
+        var user = userCredential.user;
+        // ...
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ..
+      });
+    // [END auth_signup_password]
+  }
+
+  function signOut() {
+    // [START auth_sign_out]
+    firebase.auth().signOut().then(() => {
+      // Sign-out successful.
+    }).catch((error) => {
+      // An error happened.
+    });
+    // [END auth_sign_out]
+  }*/
 
 
 
