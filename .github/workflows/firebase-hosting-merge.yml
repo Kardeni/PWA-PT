@@ -11,18 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        name: Install Node.js
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '20'
-        name: switch to repository
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with: node-version: '20'
+      - name: switch to repository
         working-directory: ./functions
 
-        name: Install dependencies
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
 
-        name: Build project
-      - run: npm run build
+      - name: Build project
+        run: npm run build
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
