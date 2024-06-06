@@ -15,13 +15,13 @@ jobs:
         uses: actions/setup-node@v2
         with: 
           node-version: '20'
-      - name: switch to repository
-        working-directory: ./functions
 
       - name: Install dependencies
+        working-directory: ./functions
         run: npm install
 
       - name: Build project
+        working-directory: ./functions
         run: npm run build
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
