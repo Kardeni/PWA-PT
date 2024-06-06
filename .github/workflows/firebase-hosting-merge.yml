@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '20'
         name: switch to repository
-      - working-directory: ./functions
+        working-directory: ./functions
 
         name: Install dependencies
       - run: npm install
