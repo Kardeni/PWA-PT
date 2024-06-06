@@ -20,10 +20,6 @@ jobs:
         working-directory: ./functions
         run: npm install
 
-      - name: Build project
-        working-directory: ./functions
-        run: npm run build
-
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
