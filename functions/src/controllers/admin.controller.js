@@ -4,7 +4,9 @@ const app = express(); //create an express object called app
 
 //Import obj readUser which contains the user model where we make the database connection
 const readUser = require('../models/user.model'); 
-
+//Import firebase auth
+const { auth } = require('./firebaseConfig');
+const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, EmailAuthCredential } = require('firebase/auth');
 module.exports={
     //Function that gets all users in table Usuario
     getAllUsers:(req,res)=>{
@@ -12,26 +14,6 @@ module.exports={
             res.send(result);
         });
         
-    },
-    //Authentication function
-    authLogin:(req,res)=>{
-        console.log("Validar inicio de sesion")
-        //Save in constants both email and psw form the request body
-        const userEmail = req.body.email;
-        const userPsw = req.body.contrasenia;
-        console.log("usuario: "+userEmail);
-        console.log("contraseña: "+userPsw);
-        //Get info from the DB of the user which email=userEmail from request body
-        readUser.query('SELECT * FROM Usuario where correo=?', [userEmail], (req,result)=>{
-            //All the info from user is saved in result[0]
-            //Compare if the psw got from DB is the same as the one got from the request body
-            if (result[0].contrasenia==userPsw){ //success login
-                console.log("Bienvenido, ingreso exitoso")
-                //render the dashboardView.pug
-                res.render('dashboardView'); 
-            }else //failed login
-                console.log("Contraseña incorrecta");
-        });
     },
     //Function that shows all actions admin exclusive
     adminActions:(req,res)=>{
@@ -48,8 +30,7 @@ module.exports={
                     name: result[i].nombre,
                     lastName: result[i].apellido,
                     email: result[i].email,
-                    adminFlag: result[i].bandera_administrador,
-                    password: result[i].contrasenia
+                    adminFlag: result[i].bandera_administrador
                 };
             }
                 readUser.query('SELECT * FROM Nodo ', (req,resultNodo)=>{
@@ -75,18 +56,31 @@ module.exports={
         //Create a constant that contains the info in the body of the request 
         const { name, lastName, lastName2, email, birthday, gender, adminFlag, node, password } = req.body;
         //Insert query into table Usuario
-        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador, contrasenia) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [name, lastName, lastName2, email, birthday, gender, adminFlag, password ], (err, result) => {
+        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador) VALUES (?, ?, ?, ?, ?, ?, ?);', [name, lastName, lastName2, email, birthday, gender, adminFlag ], (err, result) => {
             if (err) {
                 console.error(err);
-                res.status(500).send("Error al agregar usuario");
+                res.status(500).send("Error al agregar usuario en Azure");
                 return;
             }else{
                 readUser.query('SET @idUsuario = LAST_INSERT_ID();');
                 readUser.query('INSERT INTO Usuario_tiene_Nodo (Usuario_idUsuario, Nodo_idNodo) VALUES (@idUsuario,?)', [node], (err, result) => {
                     if (err) {
                         console.error(err);
-                        res.status(500).send("Error al agregar usuario");
+                        res.status(500).send("Error al asignar el nodo");
                         return;
+                    }else{
+                        createUserWithEmailAndPassword(auth, email, password)
+                        .then((userCredential) => {
+                            // Registered successfully
+                            const user = userCredential.user;
+                            //console.log('User registered successfully');
+                            res.redirect('/');
+                        })
+                        .catch((error) => {
+                            const errorCode = error.code;
+                            const errorMessage = error.message;
+                            res.status(400).send(`Error de Firebase: ${errorMessage}`);
+                        });
                     }
                 })
             }

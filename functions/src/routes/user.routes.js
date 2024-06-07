@@ -32,6 +32,7 @@ routerUser.get('/log-in/mySession', userController.showInfo);
 routerLogIn.post('/register/user', userController.registerUser);
 routerUser.get('/log-in/myNode', userController.showNode);
 routerUser.get('/log-out', userController.signOut);
+routerUser.post('/log-in/restorePsw', userController.restorePsw);
 
 //Export routerUser
 module.exports = routerUser; 

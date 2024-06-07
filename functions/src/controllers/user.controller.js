@@ -4,7 +4,7 @@ const session = require('express-session'); //for express sessions
 
 //Import firebase auth
 const { auth } = require('./firebaseConfig');
-const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } = require('firebase/auth');
+const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, EmailAuthCredential } = require('firebase/auth');
 
 /*Initialize the FirebaseUI Widget using Firebase
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
@@ -60,7 +60,7 @@ module.exports={
     registerUser:(req,res)=>{
         console.log("Estoy registrando");
         const { name, last_name1, last_name2, email, birthday, gender, isAdmin, password } = req.body;
-        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador, contrasenia) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [name, last_name1, last_name2, email, birthday, gender, isAdmin, password], (err,result)=>{
+        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador) VALUES (?, ?, ?, ?, ?, ?, ?);', [name, last_name1, last_name2, email, birthday, gender, isAdmin], (err,result)=>{
             if (err) {
                 console.error(err);
                 res.status(500).send("Error al agregar usuario de Azure");
@@ -70,7 +70,7 @@ module.exports={
                 .then((userCredential) => {
                     // Registered successfully
                     const user = userCredential.user;
-                    console.log('User registered successfully');
+                    //console.log('User registered successfully');
                     res.redirect('/');
                 })
                 .catch((error) => {
@@ -87,8 +87,8 @@ module.exports={
         //Save in constants both email and psw form the request body
         const userEmail = req.body.email;
         const userPsw = req.body.contrasenia;
-        console.log("usuario: "+userEmail);
-        console.log("contraseña: "+userPsw);
+        //console.log("usuario: "+userEmail);
+        //console.log("contraseña: "+userPsw);
         //Get info from the DB of the user which email=userEmail from request body
         readUser.query('SELECT * FROM Usuario where correo=?', [userEmail], (err,result)=>{
             if (err) throw err;
@@ -136,7 +136,6 @@ module.exports={
                     isAdmin="Administrador";
                 }else
                     isAdmin="No es administrador";
-                psw=resultUser[0].contrasenia;
                 readUser.query('SELECT * FROM Usuario_tiene_Nodo WHERE Usuario_idUsuario=? ', [userID], (err,resultNodosAsignados)=>{
                     if (err) throw err;
                     //console.log(resultNodosAsignados);
@@ -230,9 +229,19 @@ module.exports={
         .catch((error) => {
             res.status(500).send(`Error: ${error.message}`);
         });
-    }
-
-        
+    },
+    restorePsw:(req,res)=>{
+        console.log(req.body);
+        console.log("estoy entrando a la funcion");
+        const emailPsw=req.body.emailPsw;
+        sendPasswordResetEmail(auth, emailPsw)
+        .then(()=>{
+            res.redirect('/');
+        })
+        .catch((error)=>{
+            res.status(500).send(`Error: ${error.message}`);
+        })
+    }       
 }
 
 //Auth Middleware=> verifies if the user is authenticaded (if his email is in the express session)
@@ -254,7 +263,7 @@ function showDashboard(req, res, idUser){
                 // var in js array : var in result from DB query
                 idNodo:resNodos[i].Nodo_idNodo
             };
-        }//console.log(nodosList);
+        }
         res.render('dashboardView', {
             userName:userName,
             listaNodos:nodosList, 

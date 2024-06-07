@@ -34,6 +34,13 @@ html
                         div2 Contraseña: 
                             input(type="password", name="contrasenia")
                             input(type="submit", name="btnEnviar", value="Enviar")
+                .internal-container 
+                    form(id="formForgotPsw", action="user/log-in/restorePsw", method="post")
+                        h2 ¿Olvidaste tu contraseña?
+                            p Te enviaremos un correo para resetearla
+                            input.passInput(id='emailPsw', name='emailPsw', type="text" placeholder="Tu direccion de correo")
+                            input(type="submit", name="btnEnviarCorreo", value="Enviar")
+
         footer.footer 
             .footer-group1
                 .footer-box-1
