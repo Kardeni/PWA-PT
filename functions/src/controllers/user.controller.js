@@ -1,6 +1,6 @@
-//Import express
+/*//Import express
 const express = require('express');
-const session = require('express-session'); //for express sessions
+const session = require('express-session'); //for express sessions*/
 
 //Import firebase auth
 const { auth } = require('./firebaseConfig');
@@ -40,7 +40,7 @@ var uiConfig = {
     privacyPolicyUrl: '<your-privacy-policy-url>'
   };*/
 
-const app = express(); //create an express object called app
+/*const app = express(); //create an express object called app
 //Give the app json and url properties
 app.use(express.json());
 app.use (express.urlencoded({extended:true}));
@@ -49,8 +49,8 @@ app.use(session({
     secret: 'mySecret',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Cambia a true si usas HTTPS
-}));
+    cookie: { secure: true } // Cambia a true si usas HTTPS
+}));*/
 
 //Import obj readUser which contains the user model where we make the database connection
 const readUser = require('../models/user.model'); 
@@ -161,13 +161,12 @@ module.exports={
 
     //Function where the personalized dashboard is shown 
     showNode:(req, res)=>{
-        const vegetal = req.query.vegetal;
+        const nodo = req.params.id;
         // Aquí puedes manejar la lógica según el vegetal seleccionado
-        console.log(`Has seleccionado: ${vegetal}`);
-        res.send(`Has seleccionado: ${vegetal}`);
+        //console.log(`Has seleccionado: ${vegetal}`);
         const userID = req.session.idUsuario; //obtain user id form express session
-        
-        nodo=result[0].nodo; //este nodo estara dado por la seleccion del usuario
+        const esAdmin=req.session.isAdmin;
+        //nodo=result[0].nodo; //este nodo estara dado por la seleccion del usuario
         //console.log(`Bienvenido usuario ${userName} y ${userID}`);
         const medicionesList = [];//create an empty array
         const suminsitrosList = [];//create an empty array
@@ -209,12 +208,11 @@ module.exports={
                         };   
                     
                 }//console.log(suminsitrosList);
-                /*res.render('dashboardView', {
-                    usuario : userName, 
+                res.render('nodesView', { 
                     listMediciones :medicionesList, 
                     listSuministros:suminsitrosList,
                     esAdmin : esAdmin
-                });//pug:js*/
+                });//pug:js
             });
             
         });

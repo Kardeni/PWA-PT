@@ -4,7 +4,8 @@ const session = require('express-session'); //for express sessions
 const path = require('path');
 const functions = require('firebase-functions');
 //Import firebase auth
-const firebase = require('./src/controllers/firebaseConfig.js').default;
+const firebase = require('./src/controllers/firebaseConfig.js');
+
 /*Import firebase auth
 var admin = require("firebase-admin");
 var serviceAccount = require("path/to/serviceAccountKey.json");
