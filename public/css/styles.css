@@ -6,23 +6,23 @@
 
 /*Colors definitions*/
 :root{
-    --color1: #718355;
+    /*--color1: #718355;
     --color2: #87986a;
     --color3: #97a97c;
     --color4: #b5c99a;
-    --color5: #cfe1b9;
-    --color6: #e9f5db;
+    --color5: #cfe1b9;*/
+    --color1: #36691D;
+    --color2: #679E02;
+    --color3: #a1d33b;
+    --color4: #caea74;
+    --color5: #F2FFB5;
+    --color6: #eaf3c2;
     --color7: #ffedd8;
     --color8: #e7bc91;
     --color9: #a47148;
     --color10: #6f4518;
     --color11: #583101;
     --color12: #1d332c;
-    --XL: 24px;
-    --L: 20px;
-    --M: 16px;
-    --S: 12px;
-    --XS: 8px;
     --txtColor1: #49454567;
     --txtColor2: #5e5b5d;
 }
@@ -32,12 +32,11 @@ body{
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-
     /*border: 5px green solid;*/
 }
 
 main{
-    padding: 90px 20px 10px;
+    padding: 125px 20px 10px;
     /*border: 5px purple solid;*/
 }
 
@@ -49,9 +48,15 @@ main{
     border-radius: 15px;
     display: flex;
     overflow-y: auto;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
-.external-container h1 p{
+.external-container p{
+    color: var(--color11);
+}
+
+.external-container h1{
     color: var(--color11);
 }
 
@@ -65,8 +70,12 @@ main{
     margin: 10px;
 }
 
+.external-container#main-containter{
+    flex-wrap: nowrap;
+}
+
 @media screen and (max-width: 768px) {
-    .external-container{
+    .external-container#main-containter{
         flex-direction: column;
         align-items: center;
     }

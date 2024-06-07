@@ -5,10 +5,11 @@
     align-items: center;
     font-size: 16px;
 }
-  
+
 .forms-container h1{
     text-align: center;
     font-weight: 700;
+    color: var(--color11);
 }
   
 .forms-container form{
@@ -16,12 +17,30 @@
     padding: 30px;
     border-radius: 15px;
     /*border: 3px solid red;*/
-    width: 80%; /*Ver que show*/
+    width: 80%;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
+ 
+.forms-container.forms-container#forms-log-in-container form{
+    width: 30%; 
+}
+
+.forms-group#form-forgotten-password{
+    display: flex;
+    justify-content: right;
+    font-size: small;
+}
+
+.forms-group#form-forgotten-password a:link{
+    color: var(--color10);
+}
   
+.forms-group#form-forgotten-password a:visited{
+    color: var(--color11);
+}
+
 .forms{
     /*width: 100%;*/
     max-width: 420px;
@@ -35,12 +54,21 @@ form .forms-group{
 }
 
 .forms-radio-group{
+    margin: 8px;
     display: flex;
     align-content: center;
     flex-direction: column;
-    /*border: 3px solid purple;*/
     padding: 10px;
-    color: var(--txtColor2);
+    background-color: var(--color9);
+    opacity: 0.8;
+    border-radius: 15px;
+}
+
+.forms-radio-subgroup{
+    background-color: var(--color8);
+    border-radius: 10px;
+    margin: 8px;
+    padding: 6px;
 }
 
 .forms-radio-group input{
@@ -63,16 +91,6 @@ input:focus{
     outline: none;
     color: var(--color11);
 }
-  
-/*label{
-    color: var(--txtColor1);
-    font-size: 16px;
-    position: absolute;
-    left: 5px;
-    top: 10px;
-    transition: 0.5s ease-in-out;
-    pointer-events: none;
-}*/
 
 .forms-label{
     color: var(--txtColor1);
@@ -84,18 +102,10 @@ input:focus{
     pointer-events: none;
 }
 
-/*input:focus ~ label,
-input:valid ~ label{
-    top: -10px;
-    font-size: 12px;
-    color: var(--color10);
-    text-shadow: 2px 2px 2px var(--color9);
-}*/
-
 input:focus ~ .forms-label,
 input:valid ~ .forms-label{
     top: -10px;
-    font-size: 12px;
+    font-size: 16px;
     color: var(--color10);
     text-shadow: 2px 2px 2px var(--color9);
 }
@@ -131,10 +141,8 @@ input:focus ~ .bar::before{
     border-radius: 5px;
 }
 
-/*@media screen and (min-width: 769px) {
-    .forms{
-        /*width: 100%;
-        max-width: 197px;
-        /*border: 3px solid orange;
+@media screen and (max-width: 769px) {
+    .forms-container.forms-container#forms-log-in-container form{
+        width: 90%; 
     }
-}*/
+}

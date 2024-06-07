@@ -1,14 +1,15 @@
+doctype html
 html 
     head
         meta(charset='UTF-8')
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title Proyecto Terminal
+        title Recuperación de contraseña
         link(href="/img/plant.png" rel="icon")
         link(href="/css/styles.css" rel="stylesheet")
         link(href="/css/styles-forms.css" rel="stylesheet")
         link(href="/css/styles-footer.css" rel="stylesheet")
         link(href="/css/styles-nav.css" rel="stylesheet")
-    body 
+    body
         header.header
             nav.nav 
                 .nav-logo-ipn
@@ -21,19 +22,25 @@ html
                     li 
                         a(href="/") Inicio 
                     li 
-                        a(href="log-in") Iniciar sesión 
-                    li 
                         a(href="log-in/register") Registrarse
                 .nav-logo-upiita
                     img(src="/img/Escudo-UPIITA.png" alt="UPIITA" title="Unidad Profesional Interdisciplinaria en Ingeniería y Tecnologías Avanzadas")
-
         main 
-            .external-container#main-containter
-                .internal-container
-                    h1 Sistema telemático  para el monitoreo y control de huertos urbanos basado en una red inalámbrica de sensores
-                    p Nuestro objetivo es el diseño e implementación de un sistema telemático basado en una red inalámbrica de sensores para el monitoreo de temperatura, humedad del sustrato, pH, y cantidad de nutrientes, además de control de riego y suministro de nutrientes a través de una aplicación de usuario.
-                .internal-container
-                    img(src="/img/img-main-page.png" alt="Huerto" title="Huerto")
+            .forms-container#forms-log-in-container
+                form(id="formForgotPsw" action="user/log-in/restorePsw" method="post")
+                    .forms  
+                        //h1 = title 
+                        h1 Recuperación de contraseña
+                        p Coloque su dirección de correo electrónico con la que se registro en el sistema y le llegara un correo donde podrá recuperarla
+                        .forms-group
+                            //input.passInput(id='emailPsw', name='emailPsw', type="text" placeholder="Tu direccion de correo")
+                            input.passInput(id='emailPsw', name='emailPsw' type="text" placeholder="Su dirección de correo")
+                            span.bar 
+                            label.forms-label(for="email") Correo
+                        .forms-group
+                            //input(type="submit", name="btnEnviar", value="Enviar")
+                            input(type="submit" name="btnEnviar" class="btn" formnovalidate="formnovalidate" value="Enviar")
+                            
 
         footer.footer 
             .footer-group1
@@ -56,4 +63,3 @@ html
                     small Instituto Politécnico Nacional
                         b  2024
     script(src="/animatedNavBar.js")
-
