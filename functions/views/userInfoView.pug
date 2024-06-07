@@ -20,11 +20,11 @@ html
                 ul.nav-menu
                     li 
                         a(href="/") Inicio 
-                    li 
-                        a(href="log-in") Iniciar sesión 
                     if esAdmin == 1
                         li 
                             a(href="/user/adminActions") Administrar
+                    li 
+                        a(href="/user/log-out") Cerrar sesion 
                 .nav-logo-upiita
                     img(src="/img/Escudo-UPIITA.png" alt="UPIITA" title="Unidad Profesional Interdisciplinaria en Ingeniería y Tecnologías Avanzadas")
 

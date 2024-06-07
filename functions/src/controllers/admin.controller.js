@@ -138,7 +138,7 @@ module.exports={
                         res.status(500).send("Error al actualizar usuario");
                         return;
                     }
-                    res.redirect('/user/adminActions');
+                    res.redirect('/');
                 });
         });
     },
@@ -154,7 +154,7 @@ module.exports={
                 res.status(500).send("Error al eliminar usuario");
                 return;
             }
-            res.redirect('user/adminActions');
+            res.redirect('/');
         });
     },
 
@@ -167,7 +167,7 @@ module.exports={
                 res.status(500).send("Error al agregar nodo");
                 return;
             }
-            res.redirect('user/adminActions');
+            res.redirect('/');
         })
     },
     addNode_to_User:(req,res)=>{

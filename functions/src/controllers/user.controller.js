@@ -2,11 +2,11 @@
 const express = require('express');
 const session = require('express-session'); //for express sessions
 
-/*Import firebase auth
-const firebase = require('firebase');
-const firebaseui = require('firebaseui');
+//Import firebase auth
+const { auth } = require('./firebaseConfig');
+const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } = require('firebase/auth');
 
-// Initialize the FirebaseUI Widget using Firebase
+/*Initialize the FirebaseUI Widget using Firebase
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
 var uiConfig = {
     callbacks: {
@@ -63,13 +63,22 @@ module.exports={
         readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador, contrasenia) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [name, last_name1, last_name2, email, birthday, gender, isAdmin, password], (err,result)=>{
             if (err) {
                 console.error(err);
-                res.status(500).send("Error al agregar usuario");
+                res.status(500).send("Error al agregar usuario de Azure");
                 return;
             }else{
-                //readUser.query('SET @idUsuario = LAST_INSERT_ID();');
-                
+                createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Registered successfully
+                    const user = userCredential.user;
+                    console.log('User registered successfully');
+                    res.redirect('/');
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    res.status(400).send(`Error de Firebase: ${errorMessage}`);
+                }); 
             }
-            res.redirect('/');
         });
     },
     //Authentication function
@@ -85,23 +94,26 @@ module.exports={
             if (err) throw err;
             //All the info from user is saved in result[0]
             //Compare if the psw got from DB is the same as the one got from the request body
-            if (result.length > 0 && result[0].contrasenia === userPsw){ //success login
-                // Save the email in the session
-                req.session.userEmail = userEmail;
+            signInWithEmailAndPassword(auth,userEmail, userPsw)
+            .then((userCredential) => {
+                // Signed in successfully
+                const user = userCredential.user; //user es de firebase
+                req.session.userEmail = user.email;
+                req.session.uid = user.uid;
+                console.log('User signed in successfully');
                 //Save if is Admin in the session
                 req.session.isAdmin = result[0].bandera_administrador == 1;
                 req.session.idUsuario=result[0].idUsuario;
                 req.session.name=result[0].nombre;
                 const idUser = result[0].idUsuario;
-                console.log("Bienvenido, ingreso exitoso")
-                //res.status(200).send('Login successful');
                 //render the dashboardView.pug
                 showDashboard(req, res, idUser); //res is necessary to render the view; result is the object that contains the user info
-                
-            }else{//failed login
-                res.status(401).send('Invalid credentials');
-                console.log("Contraseña incorrecta");
-            }
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                res.status(401).send(`Error: ${errorMessage}`);
+            });
         });
     },
     showInfo:[isAuthenticated,(req,res)=>{
@@ -208,6 +220,16 @@ module.exports={
             
         });
         
+    },
+    signOut:(req,res)=>{
+        signOut(auth)
+        .then(() => {
+            req.session.destroy();
+            res.redirect('/');
+        })
+        .catch((error) => {
+            res.status(500).send(`Error: ${error.message}`);
+        });
     }
 
         
@@ -215,14 +237,12 @@ module.exports={
 
 //Auth Middleware=> verifies if the user is authenticaded (if his email is in the express session)
 function isAuthenticated(req, res, next) {
-    console.log(req.session.userEmail);
-    if (req.session.userEmail) {
+    if (req.session.uid) {
         return next();
     } else {
         res.status(401).send('You are not authenticated');
     }
 }
-
 function showDashboard(req, res, idUser){
     const userName=req.session.name;
     const esAdmin=req.session.isAdmin;
@@ -242,52 +262,4 @@ function showDashboard(req, res, idUser){
         });
     });
 }
-/*
-//Firebase Authentication Functions
-function signInWithEmailPassword() {
-    var email = "test@example.com";
-    var password = "hunter2";
-    // [START auth_signin_password]
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in
-        var user = userCredential.user;
-        // ...
-      })
-      .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-      });
-    // [END auth_signin_password]
-  }
-  
-  function signUpWithEmailPassword() {
-    var email = "test@example.com";
-    var password = "hunter2";
-    // [START auth_signup_password]
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in 
-        var user = userCredential.user;
-        // ...
-      })
-      .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // ..
-      });
-    // [END auth_signup_password]
-  }
-
-  function signOut() {
-    // [START auth_sign_out]
-    firebase.auth().signOut().then(() => {
-      // Sign-out successful.
-    }).catch((error) => {
-      // An error happened.
-    });
-    // [END auth_sign_out]
-  }*/
-
-
 
