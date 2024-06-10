@@ -60,7 +60,10 @@ html(lang="es")
                                     form(action="adminActions/updateUser" method="get" style="display:inline")
                                         input(type="hidden", name="idUpdate", value=person.idUser)
                                         button(type="submit")
-                                            i.fas.fa-edit  
+                                            i.fas.fa-edit
+                                    form(action="adminActions/addAdmin" method="post" style="display:inline")
+                                        input(type="hidden", name="idNewAdmin", value=person.idUser)
+                                        button(type="submit") Agregar Administrador  
                     else
                         p No hay usuarios disponibles
                 .internal-container    

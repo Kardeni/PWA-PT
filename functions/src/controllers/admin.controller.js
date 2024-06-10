@@ -1,12 +1,12 @@
-//Import express
-const express = require('express');
-const app = express(); //create an express object called app
-
 //Import obj readUser which contains the user model where we make the database connection
 const readUser = require('../models/user.model'); 
 //Import firebase auth
 const { auth } = require('./firebaseConfig');
-const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, EmailAuthCredential } = require('firebase/auth');
+const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, EmailAuthCredential, deleteUser } = require('firebase/auth');
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+
 module.exports={
     //Function that gets all users in table Usuario
     getAllUsers:(req,res)=>{
@@ -142,13 +142,26 @@ module.exports={
         //Create a const that contains the id of the user to delete 
         const idDelete = req.body.idDelete;
         //Delete query in table User where idUsuario=idDelete from the body request
-        readUser.query('DELETE FROM Usuario WHERE idUsuario = ?', [idDelete], (err, result) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send("Error al eliminar usuario");
-                return;
-            }
-            res.redirect('/');
+        readUser.query('SELECT correo FROM Usuario WHERE idUsuario=?', [idDelete], async (err, results) => {
+            const emailtoDelete = results[0].correo;
+            console.log(emailtoDelete);
+            readUser.query('DELETE FROM Usuario WHERE idUsuario = ?', [idDelete], async (err, result) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send("Error al eliminar usuario");
+                    return;
+                }
+                /*try {
+                    const userRecord = await admin.auth().getUserByEmail(emailtoDelete);
+                    const userToDeleteUid = userRecord.uid;
+                    await admin.auth().deleteUser(userToDeleteUid);
+                    return { message: 'User deleted successfully' };
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                    //throw new functions.https.HttpsError('internal', 'Unable to delete user');
+                }*/
+                res.redirect('/');
+            });
         });
     },
 
@@ -176,6 +189,19 @@ module.exports={
             }
             res.redirect('/');
         })
-    }
+    },
 
+    addAdmin:(req,res)=>{
+        //Create a const that contains the id of the user to update to admin
+        const newAdmin = req.body.idNewAdmin;
+        //Delete query in table User where idUsuario=idDelete from the body request
+        readUser.query('UPDATE Usuario SET bandera_administrador=1 WHERE idUsuario = ?;',[newAdmin], (err, result) => {
+            if (err) {
+                console.error(err);
+                res.status(500).send("Error al agregar usuario administrador");
+                return;
+            }
+            res.redirect('/');
+        });
+    }
 }

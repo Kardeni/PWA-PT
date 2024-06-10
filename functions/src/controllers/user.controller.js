@@ -1,66 +1,16 @@
-/*//Import express
-const express = require('express');
-const session = require('express-session'); //for express sessions*/
-
 //Import firebase auth
 const { auth } = require('./firebaseConfig');
-const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, EmailAuthCredential } = require('firebase/auth');
-
-/*Initialize the FirebaseUI Widget using Firebase
-const ui = new firebaseui.auth.AuthUI(firebase.auth());
-var uiConfig = {
-    callbacks: {
-      signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-        // User successfully signed in.
-        // Return type determines whether we continue the redirect automatically
-        // or whether we leave that to developer to handle.
-        return true;
-      },
-      uiShown: function() {
-        // The widget is rendered.
-        // Hide the loader.
-        document.getElementById('loader').style.display = 'none';
-      }
-    },
-    // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-    signInFlow: 'popup',
-    signInSuccessUrl: '<url-to-redirect-to-on-success>',
-    signInOptions: [
-      // Leave the lines as is for the providers you want to offer your users.
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-      firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-      firebase.auth.GithubAuthProvider.PROVIDER_ID,
-      firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      firebase.auth.PhoneAuthProvider.PROVIDER_ID
-    ],
-    // Terms of service url.
-    tosUrl: '<your-tos-url>',
-    // Privacy policy url.
-    privacyPolicyUrl: '<your-privacy-policy-url>'
-  };*/
-
-/*const app = express(); //create an express object called app
-//Give the app json and url properties
-app.use(express.json());
-app.use (express.urlencoded({extended:true}));
-
-app.use(session({
-    secret: 'mySecret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true } // Cambia a true si usas HTTPS
-}));*/
-
+const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, EmailAuthCredential} = require('firebase/auth');
+const notifier = require('node-notifier');
 //Import obj readUser which contains the user model where we make the database connection
 const readUser = require('../models/user.model'); 
 
-
 module.exports={
     registerUser:(req,res)=>{
+        //notifier.notify('¡Vaciar la lavadora!');
         console.log("Estoy registrando");
-        const { name, last_name1, last_name2, email, birthday, gender, isAdmin, password } = req.body;
-        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador) VALUES (?, ?, ?, ?, ?, ?, ?);', [name, last_name1, last_name2, email, birthday, gender, isAdmin], (err,result)=>{
+        const { name, last_name1, last_name2, email, birthday, gender, password } = req.body;
+        readUser.query('INSERT INTO Usuario (nombre, apellido, seg_apellido, correo, fecha_nacimiento, genero, bandera_administrador) VALUES (?, ?, ?, ?, ?, ?, 0);', [name, last_name1, last_name2, email, birthday, gender], (err,result)=>{
             if (err) {
                 console.error(err);
                 res.status(500).send("Error al agregar usuario de Azure");
@@ -70,7 +20,6 @@ module.exports={
                 .then((userCredential) => {
                     // Registered successfully
                     const user = userCredential.user;
-                    //console.log('User registered successfully');
                     res.redirect('/');
                 })
                 .catch((error) => {
@@ -160,7 +109,7 @@ module.exports={
     }],
 
     //Function where the personalized dashboard is shown 
-    showNode:(req, res)=>{
+    showNode:[isAuthenticated, (req, res)=>{
         const nodo = req.params.id;
         // Aquí puedes manejar la lógica según el vegetal seleccionado
         //console.log(`Has seleccionado: ${vegetal}`);
@@ -217,8 +166,8 @@ module.exports={
             
         });
         
-    },
-    signOut:(req,res)=>{
+    }],
+    signOut:[isAuthenticated, (req,res)=>{
         signOut(auth)
         .then(() => {
             req.session.destroy();
@@ -227,10 +176,9 @@ module.exports={
         .catch((error) => {
             res.status(500).send(`Error: ${error.message}`);
         });
-    },
+    }],
+
     restorePsw:(req,res)=>{
-        console.log(req.body);
-        console.log("estoy entrando a la funcion");
         const emailPsw=req.body.emailPsw;
         sendPasswordResetEmail(auth, emailPsw)
         .then(()=>{
@@ -242,7 +190,7 @@ module.exports={
     }       
 }
 
-//Auth Middleware=> verifies if the user is authenticaded (if his email is in the express session)
+//Auth Middleware=> verifies if the user is authenticaded (if his uid is in the express session)
 function isAuthenticated(req, res, next) {
     if (req.session.uid) {
         return next();
