@@ -16,6 +16,10 @@ routerLogIn.get('/register',(req,res)=>{//metodo y ruta
     res.render('registerUserView'); //('file.pug,{const to render})
 });
 
+routerLogIn.get('/resetPsw',(req,res)=>{//metodo y ruta
+    res.render('resetPswdView'); //('file.pug,{const to render})
+});
+
 
 module.exports= routerLogIn; //export routerLogIn
 

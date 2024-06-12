@@ -3,7 +3,8 @@ const express = require('express');
 const session = require('express-session'); //for express sessions
 const path = require('path');
 const functions = require('firebase-functions');
-
+const swal = require('sweetalert2');
+const usuarioCreado = 'false';
 //Import firebase auth
 const firebase = require('./src/controllers/firebaseConfig.js');
 

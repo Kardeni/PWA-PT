@@ -21,6 +21,17 @@ html(lang="es")
             }
         title Prueba 
     body
+        if usuarioCreado
+            script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
+            script.
+                document.addEventListener('DOMContentLoaded', function() {
+                    var message = "#{message}";
+                    if (message.trim()) {
+                        swal.fire(message).then(() => {
+                            window.location.href = '/user/adminActions'; // Redirige a la página principal de administración
+                        });
+                    }
+                });
         header.header
             nav.nav 
                 .nav-logo-ipn

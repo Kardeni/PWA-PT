@@ -21,7 +21,7 @@ sintax=>routerUser.method-to-use('URL from /user/', controller.function-in-contr
 routerUser.get('/', adminController.getAllUsers);
 routerUser.get('/adminActions', adminController.adminActions);
 routerUser.post('/adminActions/addUser', adminController.addUser);
-routerUser.post('/adminActions/deleteUser', adminController.deleteUser);
+routerUser.post('/adminActions/deleteUser', adminController.deleteUserAdmin);
 routerUser.post('/adminActions/updateUser', adminController.updateUser);
 routerUser.post('/adminActions/addNode', adminController.addNode);
 routerUser.post('/adminActions/addNodetoUser', adminController.addNode_to_User);
@@ -32,7 +32,7 @@ routerUser.post('/log-in', userController.authLogin);
 routerUser.get('/log-in/mySession', userController.showInfo);
 routerLogIn.post('/register/user', userController.registerUser);
 routerUser.get('/log-in/myNode/:id', userController.showNode);
-routerUser.get('/log-out', userController.signOut);
+routerUser.get('/log-out', userController.signOutFunction);
 routerUser.post('/log-in/restorePsw', userController.restorePsw);
 
 //Export routerUser

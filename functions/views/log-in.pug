@@ -10,6 +10,16 @@ html
         link(href="/css/styles-footer.css" rel="stylesheet")
         link(href="/css/styles-nav.css" rel="stylesheet")
     body
+        if registro
+            script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
+            script.
+                Swal.fire("¡Registro exitoso!", "", "success");
+        else if envioCorreo
+            script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
+            script.
+                Swal.fire("Se ha enviado el correo", "", "success").then(() => {
+                    window.location.href = '/log-in'; // Redirige a la página log-in
+                });
         header.header
             nav.nav 
                 .nav-logo-ipn
@@ -41,12 +51,10 @@ html
                             span.bar 
                             label.forms-label(for="contrasenia") Contraseña
                         .forms-group#form-forgotten-password
-                            a(href="#") ¿Olvidaste tu contraseña?
+                            a(href="log-in/resetPsw") ¿Olvidaste tu contraseña?
                         .forms-group
                             //input(type="submit", name="btnEnviar", value="Enviar")
-                            input(type="submit" name="btnEnviar" class="btn" formnovalidate="formnovalidate" value="Enviar")
-                            
-
+                            input(type="submit" name="btnEnviar" class="btn" formnovalidate="formnovalidate" value="Enviar")             
         footer.footer 
             .footer-group1
                 .footer-box-1
@@ -67,5 +75,6 @@ html
                 .footer-box-2
                     small Instituto Politécnico Nacional
                         b  2024
-    script(src="/animatedNavBar.js")
-            
+        script(src="/animatedNavBar.js")
+        
+        
