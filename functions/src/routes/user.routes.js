@@ -31,9 +31,13 @@ routerUser.post('/adminActions/addAdmin', adminController.addAdmin);
 routerUser.post('/log-in', userController.authLogin);
 routerUser.get('/log-in/mySession', userController.showInfo);
 routerLogIn.post('/register/user', userController.registerUser);
+
 routerUser.get('/log-in/myNode/:id', userController.showNode);
+routerUser.post('/log-in/myNode/:id/addWater', userController.addWater);
+
 routerUser.get('/log-out', userController.signOutFunction);
 routerUser.post('/log-in/restorePsw', userController.restorePsw);
+
 
 //Export routerUser
 module.exports = routerUser; 

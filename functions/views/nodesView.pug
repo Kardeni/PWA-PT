@@ -36,7 +36,7 @@ html
         main 
             .external-container
                 .internal-container 
-                    h1 Bienvenido #{usuario} 
+                    h1 Mi huerto  
                     h2 Mediciones:
                         if listMediciones.length 
                             each medicion, index in listMediciones
@@ -56,6 +56,12 @@ html
                                     
                         else
                             p No hay suministros disponibles
+                .internal-container 
+                    form(id="formRiego", action=`/log-in/myNode/:id{#}/addWater` method="post")
+                        input(type="submit", name="btnAddWater", value="Regar")
+                    form(id="formInyeccionNPK", action="#" method="post")
+                        input(type="submit", name="btnAddNPK", value="Inyectar nutrientes")
+
         footer.footer 
             .footer-group1
                 .footer-box-1

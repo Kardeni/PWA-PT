@@ -38,28 +38,6 @@ html
                     img(src="/img/Escudo-UPIITA.png" alt="UPIITA" title="Unidad Profesional Interdisciplinaria en Ingeniería y Tecnologías Avanzadas")
 
         main 
-            //.external-container
-                .internal-container 
-                    h1 Bienvenido #{usuario} 
-                    h2 Mediciones:
-                        if listMediciones.length 
-                            each medicion, index in listMediciones
-                                div
-                                    span.medicion-info
-                                        p= "Medicion: "+medicion.idMedicion + " Nodo: "+medicion.idNodo + " Hora: "+medicion.hora+" temperatura: "+medicion.temp+" humedad: "+medicion.humedad+" nitrogeno: "+medicion.n+" potasio: "+medicion.p+" fosoforo: "+medicion.k  
-                                    
-                        else
-                            p No hay mediciones disponibles
-
-                    h2 Suministros:
-                        if listSuministros.length 
-                            each suministro, index in listSuministros
-                                div
-                                    span.suministro-info
-                                        p= "Suministro: " +suministro.idSuministro + " Nodo: "+ suministro.idNodo + " Hora: "+suministro.hora+" Tipo: "+suministro.tipo+ "Usuario ejecutor:" + suministro.idUsuario_ejecutor
-                                    
-                        else
-                            p No hay suministros disponibles
             .external-container 
             h2 Bienvenido #{userName} 
             .external-container

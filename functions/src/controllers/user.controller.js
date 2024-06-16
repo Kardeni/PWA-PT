@@ -188,7 +188,17 @@ const restorePsw= (req,res)=>{
     .catch((error)=>{
         res.status(500).send(`Error: ${error.message}`);
     })
-}       
+} 
+
+const addWater=(req,res)=>{
+    const tipo_suminsitro = 1;
+    const currentDate = new Date();
+    const idUser = req.session.idUsuario;
+    const nodo = req.params.id;
+    readUser.query('INSERT INTO Suministro (hora, bandera_tipo_suministro, idNodo, idUsuario_ejecutor) VALUES (?, ?, ?, ?);', [currentDate, tipo_suminsitro,nodo ,idUser], (err,result)=>{
+
+    });
+}
 
 
 //Auth Middleware=> verifies if the user is authenticaded (if his uid is in the express session)
@@ -226,6 +236,7 @@ module.exports = {
     showInfo,
     showNode,
     signOutFunction,
-    restorePsw
+    restorePsw,
+    addWater
 };
 
