@@ -171,8 +171,8 @@ const deleteUserAdmin=(req, res) => {
 
 const addNode=(req,res)=>{
     console.log(req.body);
-    const{grade, name}= req.body;
-    readUser.query('INSERT INTO Nodo (grado, nombre) VALUES (?, ?);', [grade, name], (err, result)=>{
+    const{name}= req.body;
+    readUser.query('INSERT INTO Nodo (nombre) VALUES (?);', [name], (err, result)=>{
         if (err) {
             console.error(err);
             res.status(500).send("Error al agregar nodo");

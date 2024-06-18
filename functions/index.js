@@ -47,8 +47,6 @@ app.post("/update-sensor", (req,res)=>{
     //console.log("Body:", req.body);
     const {node, sensorTemp, sensorHum, sensorPH,N,P,K}= req.body;
     console.log(node, sensorTemp, sensorHum, sensorPH,N,P,K);
-    //res.render('index',{sensorTemp:sensorTemp, sensorHum:sensorHum, sensorPH:sensorPH,N:N,P:P,K:K});
-    //humedad1=value1;
     //Se llama a la funcion que realiza la insercion a la base
     queryDatabase(node, sensorTemp, sensorHum, sensorPH,N,P,K);
     res.send("Okey");

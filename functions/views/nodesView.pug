@@ -8,7 +8,18 @@ html
         link(href="/css/styles-forms.css" rel="stylesheet")
         link(href="/css/styles-footer.css" rel="stylesheet")
         link(href="/css/styles-nav.css" rel="stylesheet")
-    body 
+    body
+        if accionInsertada
+            script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
+            script.
+                document.addEventListener('DOMContentLoaded', function() {
+                    var message = "#{message}";
+                    if (message.trim()) {
+                        swal.fire(message).then(() => {
+                            window.location.href = `/user/log-in/myNode/${nodo}`; // Redirige a la página principal de administración
+                        });
+                    }
+                }); 
         header.header
             nav.nav 
                 .nav-logo-ipn
@@ -57,9 +68,9 @@ html
                         else
                             p No hay suministros disponibles
                 .internal-container 
-                    form(id="formRiego", action=`/log-in/myNode/:id{#}/addWater` method="post")
+                    form(id="formRiego", action=`/user/log-in/myNode/addWater/${nodo}`, method="post")
                         input(type="submit", name="btnAddWater", value="Regar")
-                    form(id="formInyeccionNPK", action="#" method="post")
+                    form(id="formInyeccionNPK", action=`/user/log-in/myNode/addNPK/${nodo}`, method="post")
                         input(type="submit", name="btnAddNPK", value="Inyectar nutrientes")
 
         footer.footer 

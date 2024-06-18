@@ -109,11 +109,9 @@ const showInfo=[isAuthenticated,(req,res)=>{
     });
 }]
 
-    //Function where the personalized dashboard is shown 
-const showNode=[isAuthenticated, (req, res)=>{
+    //Function where the personalized dashboard is shown req,res, mensaje, usuarioCreado = 'false'
+const showNode=(req, res, mensaje, accionInsertada='false')=>{
     const nodo = req.params.id;
-    // Aquí puedes manejar la lógica según el vegetal seleccionado
-    //console.log(`Has seleccionado: ${vegetal}`);
     const userID = req.session.idUsuario; //obtain user id form express session
     const esAdmin=req.session.isAdmin;
     //nodo=result[0].nodo; //este nodo estara dado por la seleccion del usuario
@@ -143,9 +141,9 @@ const showNode=[isAuthenticated, (req, res)=>{
             //console.log(resultSuministro);
             for (let i = 0; i < resultSuministro.length; i++) {
                 if(resultSuministro[i].bandera_tipo_suministro==0){
-                    tipoSuministro=="Riego";
+                    tipoSuministro="Riego";
                 }else
-                tipoSuministro="Inyeccion de nutrientes";
+                    tipoSuministro="Inyeccion de nutrientes";
                 //One suministro => one element of the array (i)
                 //console.log(resultSuministro[i].idSuministro);
                     suminsitrosList[i] = {
@@ -159,14 +157,17 @@ const showNode=[isAuthenticated, (req, res)=>{
                 
             }//console.log(suminsitrosList);
             res.render('nodesView', { 
-                listMediciones :medicionesList, 
-                listSuministros:suminsitrosList,
-                esAdmin : esAdmin
-            });//pug:js
+                listMediciones: medicionesList, 
+                listSuministros: suminsitrosList,
+                esAdmin: esAdmin,
+                nodo: nodo,
+                message: mensaje,
+                accionInsertada: accionInsertada
+            });
         });
         
     });  
-}]
+}
 const signOutFunction=[isAuthenticated, (req,res)=>{
     signOut(auth)
     .then(() => {
@@ -191,16 +192,52 @@ const restorePsw= (req,res)=>{
 } 
 
 const addWater=(req,res)=>{
+    const tipo_suminsitro = 0;
+    const currentDate = new Date();
+    const idUser = req.session.idUsuario;
+    const nodo = req.params.id;
+    readUser.query('INSERT INTO Suministro (hora, bandera_tipo_suministro, idNodo, idUsuario_ejecutor) VALUES (?, ?, ?, ?);', [currentDate, tipo_suminsitro,nodo ,idUser], (err,result)=>{
+        if (err) {
+            console.error(err);
+            res.status(500).send("Error al agregar suministro en tabla Suministro en Azure");
+            return;
+        }else{
+            readUser.query('INSERT INTO Suministro2 (idNodo, bandera_tipo_suministro) VALUES (?, ?);', [nodo, tipo_suminsitro], (err,result2)=>{
+                if (err) {
+                    console.error(err);
+                    res.status(500).send("Error al agregar suministro en tabla Suminstro2 en Azure");
+                    return;
+                }else{
+                showNode(req, res, '¡Riego exitoso!', 'true');
+                }
+            });
+        }
+    });
+}
+
+const addNPK=(req,res)=>{
     const tipo_suminsitro = 1;
     const currentDate = new Date();
     const idUser = req.session.idUsuario;
     const nodo = req.params.id;
     readUser.query('INSERT INTO Suministro (hora, bandera_tipo_suministro, idNodo, idUsuario_ejecutor) VALUES (?, ?, ?, ?);', [currentDate, tipo_suminsitro,nodo ,idUser], (err,result)=>{
-
+        if (err) {
+            console.error(err);
+            res.status(500).send("Error al agregar suministro en tabla Suministro en Azure");
+            return;
+        }else{
+            readUser.query('INSERT INTO Suministro2 (idNodo, bandera_tipo_suministro) VALUES (?, ?);', [nodo, tipo_suminsitro], (err,result2)=>{
+                if (err) {
+                    console.error(err);
+                    res.status(500).send("Error al agregar suministro en tabla Suminstro2 en Azure");
+                    return;
+                }else{
+                showNode(req, res, '¡Inyección de nutrientes exitosa!', 'true');
+                }
+            });
+        }
     });
 }
-
-
 //Auth Middleware=> verifies if the user is authenticaded (if his uid is in the express session)
 function isAuthenticated(req, res, next) {
     if (req.session.uid) {
@@ -237,6 +274,7 @@ module.exports = {
     showNode,
     signOutFunction,
     restorePsw,
-    addWater
+    addWater,
+    addNPK
 };
 
