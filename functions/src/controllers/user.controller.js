@@ -1,10 +1,9 @@
 //Import firebase auth
 const { auth } = require('./firebaseConfig');
 const { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, EmailAuthCredential} = require('firebase/auth');
-const swal = require('sweetalert2');
+
 //Import obj readUser which contains the user model where we make the database connection
 const readUser = require('../models/user.model'); 
-
 
 const registerUser=(req,res)=>{
     console.log("Estoy registrando");
@@ -36,8 +35,6 @@ const authLogin=(req,res)=>{
     //Save in constants both email and psw form the request body
     const userEmail = req.body.email;
     const userPsw = req.body.contrasenia;
-    //console.log("usuario: "+userEmail);
-    //console.log("contraseña: "+userPsw);
     //Get info from the DB of the user which email=userEmail from request body
     readUser.query('SELECT * FROM Usuario where correo=?', [userEmail], (err,result)=>{
         if (err) throw err;
@@ -53,7 +50,10 @@ const authLogin=(req,res)=>{
             //Save if is Admin in the session
             req.session.isAdmin = result[0].bandera_administrador == 1;
             req.session.idUsuario=result[0].idUsuario;
+            console.log(req.session.idUsuario);
             req.session.name=result[0].nombre;
+            req.session.save();
+            console.log("Request completo en auth",req.session);
             const idUser = result[0].idUsuario;
             const showSuccessAlert = 'true';
             //render the dashboardView.pug
@@ -113,9 +113,8 @@ const showInfo=[isAuthenticated,(req,res)=>{
 const showNode=(req, res, mensaje, accionInsertada='false')=>{
     const nodo = req.params.id;
     const userID = req.session.idUsuario; //obtain user id form express session
+    console.log("User id en showNode:",userID);
     const esAdmin=req.session.isAdmin;
-    //nodo=result[0].nodo; //este nodo estara dado por la seleccion del usuario
-    //console.log(`Bienvenido usuario ${userName} y ${userID}`);
     const medicionesList = [];//create an empty array
     const suminsitrosList = [];//create an empty array
     readUser.query('SELECT m.* FROM Medicion m JOIN Usuario_tiene_Nodo utn ON m.idNodo = utn.Nodo_idNodo JOIN Usuario u ON utn.Usuario_idUsuario = u.idUsuario WHERE u.idUsuario = ?;', [userID], (req, resultMedicion) => {
@@ -194,8 +193,16 @@ const restorePsw= (req,res)=>{
 const addWater=(req,res)=>{
     const tipo_suminsitro = 0;
     const currentDate = new Date();
-    const idUser = req.session.idUsuario;
+    console.log("Request completo en addwater ",req.session);
+    if (req.session.idUsuario) {
+        const idUser = req.session.idUsuario; //obtain user id form express session
+        console.log(idUser);
+    } else {
+        console.error("No existe idUser");
+    }
+    
     const nodo = req.params.id;
+    
     readUser.query('INSERT INTO Suministro (hora, bandera_tipo_suministro, idNodo, idUsuario_ejecutor) VALUES (?, ?, ?, ?);', [currentDate, tipo_suminsitro,nodo ,idUser], (err,result)=>{
         if (err) {
             console.error(err);
@@ -246,7 +253,11 @@ function isAuthenticated(req, res, next) {
         res.status(401).send('You are not authenticated');
     }
 }
+
+
 function showDashboard(req, res, idUser, showSuccessAlert){
+    console.log("idUser en showDashboard", idUser);
+    console.log("idUser en showDashboard con session", req.session.idUsuario);
     const userName=req.session.name;
     const esAdmin=req.session.isAdmin;
     nodosList=[];
@@ -270,6 +281,7 @@ function showDashboard(req, res, idUser, showSuccessAlert){
 module.exports = {
     registerUser,
     authLogin,
+    isAuthenticated,
     showInfo,
     showNode,
     signOutFunction,

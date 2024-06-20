@@ -46,22 +46,22 @@ html
                     if listaNodos.length 
                         each nodo, index in listaNodos
                             div
-                                if nodo.idNodo==1
+                                if nodo.idNodo==2
                                     .internal-container
-                                        a(action="log-in/myNode/1", href="log-in/myNode/1")
+                                        a(action="log-in/myNode/2", href="log-in/myNode/2")
                                             img(src="/img/carrots.jpg" alt="Zanahoria" title="Zanahoria")
                                                 
-                                else if nodo.idNodo==2
-                                    .internal-container 
-                                        a(action="log-in/myNode/2", href="log-in/myNode/2")
-                                            img(src="/img/spinach.png" alt="Espinaca" title="Espinaca")
                                 else if nodo.idNodo==3
                                     .internal-container 
                                         a(action="log-in/myNode/3", href="log-in/myNode/3")
-                                            img(src="/img/lettuce.jpg" alt="Lechuga" title="Lechuga")
+                                            img(src="/img/spinach.png" alt="Espinaca" title="Espinaca")
                                 else if nodo.idNodo==4
                                     .internal-container 
                                         a(action="log-in/myNode/4", href="log-in/myNode/4")
+                                            img(src="/img/lettuce.jpg" alt="Lechuga" title="Lechuga")
+                                else if nodo.idNodo==5
+                                    .internal-container 
+                                        a(action="log-in/myNode/5", href="log-in/myNode/5")
                                             img(src="/img/tomate.png" alt="Jitomate" title="Jitomate")
                     else
                         p No hay nodos disponibles

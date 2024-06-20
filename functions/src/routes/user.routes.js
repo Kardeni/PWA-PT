@@ -1,6 +1,5 @@
 //Import express
 const express = require('express');
-const session = require('express-session'); //for express sessions
 
 //Import admin.controller in obj adminController
 const adminController=require('../controllers/admin.controller'); 
@@ -28,7 +27,7 @@ routerUser.post('/adminActions/addNodetoUser', adminController.addNode_to_User);
 routerUser.post('/adminActions/addAdmin', adminController.addAdmin);
 
 //NORMAL USER ACTIONS/////////////
-routerUser.post('/log-in', userController.authLogin);
+routerUser.post('/log-in', (req,res)=>userController.authLogin(req,res));
 routerUser.get('/log-in/mySession', userController.showInfo);
 routerLogIn.post('/register/user', userController.registerUser);
 

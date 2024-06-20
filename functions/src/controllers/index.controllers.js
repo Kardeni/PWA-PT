@@ -1,6 +1,5 @@
 //Import express
 const express = require('express');
-const app = express();//create an express object called app
 
 //Import RouterLogIn which contains the index controller and the URL /log-in
 const routerLogIn = express.Router(); 
