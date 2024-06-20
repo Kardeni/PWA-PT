@@ -3,7 +3,8 @@ html(lang="es")
     head 
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css")
+        title Administrador
+        link(href="/img/plant.png" rel="icon")
         link(href="/css/styles.css" rel="stylesheet")
         link(href="/css/styles-forms.css" rel="stylesheet")
         link(href="/css/styles-footer.css" rel="stylesheet")
@@ -53,102 +54,185 @@ html(lang="es")
                 .nav-logo-upiita
                     img(src="/img/Escudo-UPIITA.png" alt="UPIITA" title="Unidad Profesional Interdisciplinaria en Ingeniería y Tecnologías Avanzadas")
         main 
-            
-            .external-container
-                .internal-container
-                    h1 Lista de usuarios:
-                    if userList.length 
-                        each person, index in userList
-                            div.user
-                                span.user-info
-                                    p= person.idUser + " " + person.name + " " + person.lastName
-                                span.action-buttons
-                                    form(action="adminActions/deleteUser" method="post" style="display:inline")
-                                        input(type="hidden", name="idDelete", value=person.idUser)
-                                        button(type="submit") 
-                                            i.fas.fa-trash-alt
 
-                                    form(action="adminActions/updateUser" method="get" style="display:inline")
-                                        input(type="hidden", name="idUpdate", value=person.idUser)
-                                        button(type="submit")
-                                            i.fas.fa-edit
-                                    form(action="adminActions/addAdmin" method="post" style="display:inline")
-                                        input(type="hidden", name="idNewAdmin", value=person.idUser)
-                                        button(type="submit") Agregar Administrador  
-                    else
-                        p No hay usuarios disponibles
-                .internal-container    
-                    div#add-user
-                        h2 Agregar Usuario
-                        form(id="formAddUser", action="adminActions/addUser" method="post")
-                            input(type="text", name="name", placeholder="Nombre")
-                            input(type="text", name="lastName", placeholder="Primer Apellido")
-                            input(type="text", name="lastName2", placeholder="Segundo Apellido")
-                            input(type="email", name="email", placeholder="email")
+            .admin-container
+                .external-container#admin
+                    .internal-container#users-list
+                        h1 Lista de usuarios:
+                        if userList.length 
+                            each person, index in userList
+                                .container-user-info
+                                    span.user-info
+                                        p= person.idUser + ") " + person.name + " " + person.lastName
+                                    span.action-buttons
+                                        form(action="adminActions/deleteUser" method="post" style="display:inline")
+                                            input(type="hidden", name="idDelete", value=person.idUser)
+                                            button(type="submit") 
+                                                svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16")
+                                                    path(d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z")
+                                                    path(d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z")
+
+                                        form(action="adminActions/updateUser" method="get" style="display:inline")
+                                            input(type="hidden", name="idUpdate", value=person.idUser)
+                                            button(type="submit")
+                                                svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16")
+                                                    path(d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z")
+                                        form(action="adminActions/addAdmin" method="post" style="display:inline")
+                                            input(type="hidden", name="idNewAdmin", value=person.idUser)
+                                            button(type="submit") Agregar Administrador 
+                        else
+                            p No hay usuarios disponibles
+            .forms-container
+                form(id="formAddUser" action="adminActions/addUser" method="post")
+                    .forms
+                        h1 Agregar Usuario
+                        .forms-group
+                            input(type="text"  id="name" name="name" required="true")
+                            //input(type="text", name="name", placeholder="Nombre")
+                            span.bar 
+                            label.forms-label(for="name") Nombre
+                        .forms-group
+                            input(type="text"  id="lastName" name="lastName" required="true")
+                            //input(type="text", name="lastName", placeholder="Apellido")
+                            span.bar 
+                            label.forms-label(for="lastName") Primer apellido
+                        .forms-group
+                            input(type="text"  id="lastName2" name="lastName2" required="true")
+                            //input(type="text", name="lastName2", placeholder="Segundo Apellido")
+                            span.bar 
+                            label.forms-label(for="lastName2") Segundo pellido
+                        div
                             p Fecha de nacimiento
-                                    input(type="date"  id="birthday" name="birthday" required="true")
-                            p Genero
-                                input(type="radio" id="male" name="gender" value="Masculino")
+                            input(type="date"  id="birthday" name="birthday" required="true")
+                            //input(type="date"  id="birthday" name="birthday")
+                            span.bar
+                    .forms
+                        p Genero
+                        .forms-radio-group
+                            .forms-radio-subgroup
                                 label(for="male") Masculino
-                                input(type="radio" id="female" name="gender" value="Femenino")
+                                input(type="radio" id="male" name="gender" value="Masculino")
+                            .forms-radio-subgroup
                                 label(for="female") Femenino
-                                input(type="radio" id="noBinary" name="gender" value="No binario")
-                                label(for="female") No binario
+                                input(type="radio" id="female" name="gender" value="Femenino")
+                            .forms-radio-subgroup
+                                label(for="no-binary") No binario
+                                input(type="radio" id="no-binary" name="gender" value="No binario")
+                    .forms
+                        .forms-group
                             p Admin: 
-                                    select(name="adminFlag")
-                                            option(value="0") No
-                                            option(value="1") Sí
-                                    input(type="text", name="node", placeholder="nodo")
-                                    input(type="password", name="password", placeholder="Contraseña")
-                                    br
-                                    input(type="submit", name="btnAdd", value="Agregar Usuario")
-                    div#update-user
-                .internal-container
-                    h2 Actualizar Usuario
-                    form(id="formUpdateUser", action="adminActions/updateUser" method="post")
-                        p id del usuario: 
+                                select(name="adminFlag")
+                                        option(value="0") No
+                                        option(value="1") Sí
+                        .forms-group
+                            input(type="text"  id="node" name="node" required="true")
+                            //input(type="text", name="node", placeholder="nodo")
+                            span.bar 
+                            label.forms-label(for="node") Nodo
+                        .forms-group
+                            input(type="email"  id="email" name="email" required="true")
+                            //input(type="email", name="email", placeholder="correo")
+                            span.bar 
+                            label.forms-label(for="email") Correo Electrónico
+                        .forms-group
+                            input(type="password"  id="password" name="password" required="true")
+                            //input(type="password", name="password", placeholder="Contraseña")
+                            span.bar 
+                            label.forms-label(for="password") Contraseña
+                        .forms-group
+                            input(type="submit" name="btnAdd" class="btn" formnovalidate="formnovalidate" value="Agregar")
+                            //input(type="submit", name="btnAdd", value="Agregar Usuario")
+            
+            .forms-container
+                form(id="formUpdateUser", action="adminActions/updateUser" method="post")
+                    .forms
+                        h1 Actualizar Usuario
+                        .forms-group 
+                            p id del usuario: 
                             select(name="idUpdate")
                                 option(value="1") 1
                                 option(value="2") 2
                                 option(value="3") 3
-                        input(type="text", name="name", placeholder="Nombre")
-                        input(type="text", name="lastName", placeholder="Apellido")
-                        input(type="text", name="lastName2", placeholder="Segundo Apellido")
-                        input(type="email", name="email", placeholder="correo")
-                        p Fecha de nacimiento
-                                input(type="date"  id="birthday" name="birthday")
+                        .forms-group
+                            input(type="text"  id="name" name="name" required="true")
+                            //input(type="text", name="name", placeholder="Nombre")
+                            span.bar 
+                            label.forms-label(for="name") Nombre
+                        .forms-group
+                            input(type="text"  id="lastName" name="lastName" required="true")
+                            //input(type="text", name="lastName", placeholder="Apellido")
+                            span.bar 
+                            label.forms-label(for="lastName") Primer apellido
+                        .forms-group
+                            input(type="text"  id="lastName2" name="lastName2" required="true")
+                            //input(type="text", name="lastName2", placeholder="Segundo Apellido")
+                            span.bar 
+                            label.forms-label(for="lastName2") Segundo pellido
+                        div
+                            p Fecha de nacimiento
+                            input(type="date"  id="birthday" name="birthday" required="true")
+                            //input(type="date"  id="birthday" name="birthday")
+                            span.bar
+                    .forms
                         p Genero
-                            input(type="radio" id="male" name="gender" value="Masculino")
-                            label(for="male") Masculino
-                            input(type="radio" id="female" name="gender" value="Femenino")
-                            label(for="female") Femenino
-                            input(type="radio" id="noBinario" name="gender" value="No binario")
-                            label(for="female") No binario
-                        p Admin: 
-                            select(name="adminFlag")
-                                option(value="0") No
-                                option(value="1") Sí
-                        input(type="text", name="node", placeholder="nodo")
-                        br
-                        input(type="submit", name="btnUpdate", value="Actualizar Usuario")
-                .internal-container
-                    div#add-node
-                        h2 Agregar Nodo
-                        form(id="formAddNode", action="adminActions/addNode" method="post")
-                            input(type="text", name="name", placeholder="Nombre")
-                            input(type="submit", name="btnAddNodo", value="Agregar Nodo")
-                .internal-container
-                    div#add-node-to-user
-                        h2 Asignar un Nodo a un Usuario
-                        form(id="formAddNodeToUser", action="adminActions/addNodetoUser" method="post")
-                            select(name="userSelect" id="userSelect")
-                                each user in userList
-                                    option(value=user.idUser) #{user.name}
-                            select(name="nodeSelect" id="nodeSelect")
-                                each node in nodesList
-                                    option(value=node.idNodo) #{node.name}
-                            input(type="submit", name="btnAsignNode", value="Asignar Nodo")
-                
+                        .forms-radio-group
+                            .forms-radio-subgroup
+                                label(for="male") Masculino
+                                input(type="radio" id="male" name="gender" value="Masculino")
+                            .forms-radio-subgroup
+                                label(for="female") Femenino
+                                input(type="radio" id="female" name="gender" value="Femenino")
+                            .forms-radio-subgroup
+                                label(for="no-binary") No binario
+                                input(type="radio" id="no-binary" name="gender" value="No binario")
+                    .forms
+                        .forms-group
+                            p Admin: 
+                                select(name="adminFlag")
+                                        option(value="0") No
+                                        option(value="1") Sí
+                        .forms-group
+                            input(type="text"  id="node" name="node" required="true")
+                            //input(type="text", name="node", placeholder="nodo")
+                            span.bar 
+                            label.forms-label(for="node") Nodo
+                        .forms-group
+                            input(type="email"  id="email" name="email" required="true")
+                            //input(type="email", name="email", placeholder="correo")
+                            span.bar 
+                            label.forms-label(for="email") Correo Electrónico
+                        .forms-group
+                            input(type="submit" name="btnAdd" class="btn" formnovalidate="formnovalidate" value="Agregar")
+                            //input(type="submit", name="btnAdd", value="Agregar Usuario")
+
+            .admin-container
+                .forms-container
+                    form(id="formAddNode", action="adminActions/addNode" method="post")
+                        .form
+                            h2 Agregar Nodo
+                            .forms-group
+                                input(type="text" name="name" required="true")
+                                //input(type="text", name="name", placeholder="Nombre")
+                                span.bar 
+                                label.forms-label(for="name") Nodo
+                            .forms-group
+                                input(type="submit" name="btnAddNodo" class="btn" formnovalidate="formnovalidate" value="Agregar")
+
+            .admin-container
+                .forms-container
+                    form(id="formAddNodeToUser", action="adminActions/addNodetoUser" method="post")
+                        .form
+                            h2 Asignar un Nodo a un Usuario
+                            .forms-group
+                                select(name="userSelect" id="userSelect")
+                                    each user in userList
+                                        option(value=user.idUser) #{user.name}
+                                select(name="nodeSelect" id="nodeSelect")
+                                    each node in nodesList
+                                        option(value=node.idNodo) #{node.name}
+                            .forms-group
+                                input(type="submit" name="btnAsignNode" class="btn" formnovalidate="formnovalidate" value="Asignar")
+                    
         footer.footer 
             .footer-group1
                 .footer-box-1
@@ -157,15 +241,16 @@ html(lang="es")
                     hr
                     p Presentado por: 
                     p Benitez Quiroz Karla Denisse 
-                    p Gallegos Salinas Emilio
+                    p Gallegos Salinas Emilio 
                 .footer-box-2
-                    p GitHub
-                    hr
                     .footer-icon
-                        a(href="https://github.com/EmilioGS/WSN-PT" target="_blank")
+                        a(href="https://github.com/Kardeni" target="_blank")
                             svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16")
                                 path(d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8") 
             .footer-group2
-                small Instituto Politécnico Nacional
-                    b  2024
+                .footer-box-1
+                    img(src="/img/lorax.png" alt="Planta" title="Planta" width="32px")
+                .footer-box-2
+                    small Instituto Politécnico Nacional
+                        b  2024
     script(src="/animatedNavBar.js")

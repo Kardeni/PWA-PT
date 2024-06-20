@@ -11,7 +11,7 @@
 
 .nav{
     position: relative;
-    /*height: 90px;*/
+    height: 90px;/*Esta la descomente*/
     display: flex;
     justify-content: space-between;
     margin: 0 auto;
@@ -55,11 +55,13 @@
 .nav-menu a{
     position: relative;
     text-decoration: none;
-    font-size: large;
+    font-size: medium;
     color: var(--color4);
     font-weight: 400;
     text-transform: uppercase;
-    padding: 10px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
     border-radius: 10px;
 }
 
@@ -74,13 +76,18 @@
     background: none;
     border: none;
     padding: 30px;
+    padding-right: 35px;
     cursor: pointer;
 
     display: none;
 }
 
 .nav-toggle svg{
-    transform: scale(1.8);
+    transform: scale(2);
+}
+
+.nav-menu li svg{
+    transform: scale(2);
 }
 
 @media screen and (max-width: 768px) {
@@ -100,7 +107,7 @@
         padding-top: 50px;
 
         left: 100%;
-        transition: left 0.3s;
+        transition: left 0.4s;
     }
 
     .nav-menu a{
