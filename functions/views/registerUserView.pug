@@ -78,6 +78,10 @@ html
                             span.bar 
                             label.forms-label(for="password") Contraseña
                         .forms-group
+                            input(type="password"  id="confirm_password" name="confirm_password" required="true")
+                            span.bar 
+                            label.forms-label(for="confirm_password") Confirmar Contraseña
+                        .forms-group
                             input(type="submit" class="btn" formnovalidate="formnovalidate" value="Enviar")
 
         footer.footer 
@@ -100,4 +104,52 @@ html
                 .footer-box-2
                     small Instituto Politécnico Nacional
                         b  2024
+        script.
+            function validateEmail(email) {
+                var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            function validateAge(birthday) {
+                var today = new Date();
+                var birthDate = new Date(birthday);
+                var age = today.getFullYear() - birthDate.getFullYear();
+                var monthDifference = today.getMonth() - birthDate.getMonth();
+
+                // Ajusta la edad si el mes de cumpleaños aún no ha llegado este año
+                if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                return age >= 6 && age <= 80;
+            }
+
+            function validatePasswords(password, confirmPassword) {
+                return password === confirmPassword;
+            }
+
+            document.getElementById('form').addEventListener('submit', function(event) {
+                var email = document.getElementById('email').value;
+                var birthday = document.getElementById('birthday').value;
+                var password = document.getElementById('password').value;
+                var confirmPassword = document.getElementById('confirm_password').value;
+
+                var errors = [];
+
+                if (!validateEmail(email)) {
+                    errors.push('Por favor, ingrese un correo electrónico válido.');
+                }
+                if (!validateAge(birthday)) {
+                    errors.push('Por favor, ingrese una fecha de nacimiento válida. La edad debe ser entre 6 y 80 años.');
+                }
+                if (!validatePasswords(password, confirmPassword)) {
+                    errors.push('Las contraseñas no coinciden. Por favor, ingrese la misma contraseña en ambos campos.');
+                }
+
+                if (errors.length > 0) {
+                    alert(errors.join('\n'));
+                    event.preventDefault();
+                }
+            }); 
     script(src="/animatedNavBar.js")
+

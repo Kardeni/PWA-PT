@@ -74,6 +74,28 @@ main{
     flex-wrap: nowrap;
 }
 
+.main-button-container#anchor {
+    margin: 20px;
+    padding: 15;
+    background-color: var(--color2);
+    color: var(--color1);
+    border-radius: 10px;
+    align-items: center;
+    border: 3px solid red;
+}
+
+.main-button-container#anchor a{
+    text-decoration: none;
+    font-size: medium;
+    color: var(--color4);
+    font-weight: 400;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 3px solid red;
+}
+
 @media screen and (max-width: 768px) {
     .external-container#main-containter{
         flex-direction: column;
@@ -174,4 +196,14 @@ main{
     .external-container#admin{
         width: 95%;
     }
+}
+
+/*Alertas de Firebase*/
+
+/* Estilo para el botón de confirmación */
+
+.swal2-shown{
+    background-color: var(--color3) !important; /* Cambia esto al color que desees */
+    border-color: var(--color4) !important;
+    color: var(--color1) !important; /* Cambia esto si necesitas cambiar el color del texto */
 }
