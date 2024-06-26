@@ -1,9 +1,10 @@
 //Import express
 const express = require('express');
-const session = require('express-session'); //for express sessions
+//const session = require('express-session'); //for express sessions
+const session = require('cookie-session');
 const path = require('path');
 const functions = require('firebase-functions');
-const usuarioCreado = 'false';
+
 const conn = require('./src/models/user.model'); 
 //Import firebase auth
 const firebase = require('./src/controllers/firebaseConfig.js');
@@ -15,13 +16,53 @@ app.set('trust proxy', 1); // Confiar en el primer proxy
 app.use(express.json());
 app.use (express.urlencoded({extended:true}));
 
+
 app.use(session({
+    secret: 'mySecret',
+    name:'idUsuario',
+    saveUninitialized:true,
+    cookie: {
+      secure: app.get('env') === 'production', // serve secure cookies in production
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      sameSite: app.get('env') === 'production' ? 'strict' : 'lax'
+    }
+  }));
+  
+/*
+var sess = {
+    secret: 'mySecret',
+    cookie: {}
+  }
+  
+  if (app.get('env') === 'production') {
+    app.set('trust proxy', 1) // trust first proxy
+    sess.cookie.secure = true // serve secure cookies
+  }
+  
+  app.use(session(sess));
+/*
+app.use(session({
+    secret: 'mySecret',
+    proxy: true,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        secure: true,
+        httpOnly: true,
+        sameSite: 'none', // Asegura que las cookies se envían en contextos cross-site
+        maxAge: 24 * 60 * 60 * 1000 // 1 día de vida para la cookie
+    }
+}));
+
+
+/*app.use(session({
     secret: 'mySecret',
     proxy: true,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true }
- }))
+ }))*/
 
 /*app.use(session({
     secret: 'mySecret',
@@ -117,9 +158,4 @@ function queryDatabase(node, sensorTemp, sensorHum, sensorPH,N,P,K){
             else console.log('Inserted ' + results.affectedRows + ' row(s).');
         }
     )
-
-    conn.end(function (err) {
-        if (err) throw err;
-        else  console.log('Done.')
-    });
 };

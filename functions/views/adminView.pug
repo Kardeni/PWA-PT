@@ -42,8 +42,8 @@ html(lang="es")
                         path(fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5")
 
                 ul.nav-menu
-                    li 
-                        a(href="/") Inicio 
+                    //li 
+                        a(href="/user/log-in/dashboard") Inicio 
                     li
                         a(href="log-in/mySession")
                             svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16")
@@ -148,11 +148,9 @@ html(lang="es")
                     .forms
                         h1 Actualizar Usuario
                         .forms-group 
-                            p id del usuario: 
-                            select(name="idUpdate")
-                                option(value="1") 1
-                                option(value="2") 2
-                                option(value="3") 3
+                            select(name="idUpdate" id="idUpdate")
+                                each user in userList
+                                    option(value=user.idUser) #{user.name}
                         .forms-group
                             input(type="text"  id="name" name="name" required="true")
                             //input(type="text", name="name", placeholder="Nombre")

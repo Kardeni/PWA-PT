@@ -1,7 +1,8 @@
 // firebaseConfig.js
 // Import the functions you need from the SDKs you need
 const { initializeApp } = require('firebase/app');
-const { getAuth, } = require('firebase/auth'); 
+const { getAuth, } = require('firebase/auth');
+//for analytics
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -12,6 +13,7 @@ const firebaseConfig = {
     messagingSenderId: "785416266190",
     appId: "1:785416266190:web:06a839663f1a7e52134b9f"
   };
+  
   
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

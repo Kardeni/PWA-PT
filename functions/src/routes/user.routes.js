@@ -27,13 +27,15 @@ routerUser.post('/adminActions/addNodetoUser', adminController.addNode_to_User);
 routerUser.post('/adminActions/addAdmin', adminController.addAdmin);
 
 //NORMAL USER ACTIONS/////////////
-routerUser.post('/log-in', (req,res)=>userController.authLogin(req,res));
+routerUser.post('/log-in',userController.authLogin);
 routerUser.get('/log-in/mySession', userController.showInfo);
 routerLogIn.post('/register/user', userController.registerUser);
 
 routerUser.get('/log-in/myNode/:id', userController.showNode);
 routerUser.post('/log-in/myNode/addWater/:id', userController.addWater);
 routerUser.post('/log-in/myNode/addNPK/:id', userController.addNPK);
+routerUser.get('/log-in/dashboard', userController.dashboardUser);
+
 
 routerUser.get('/log-out', userController.signOutFunction);
 routerUser.post('/log-in/restorePsw', userController.restorePsw);

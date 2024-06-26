@@ -95,11 +95,9 @@ const updateUser=(req, res) => {
     //console.log(req.body);
     //Create a constant that contains the info in the body of the request
     const { idUpdate, name, lastName, lastName2, email, birthday, gender, adminFlag, node } = req.body;
-
     //Query to get the info of the user that idUsuario=idUpdate from the request
     readUser.query('SELECT * FROM Usuario WHERE idUsuario = ?', [idUpdate], (req, resultado) => {
-
-        const user = resultado[0];//save the user info in user
+        //const user = resultado[0];//save the user info in user
         let updates = [];//array to fields to update in DB
         let values = [];//array to the values to updtae
 
