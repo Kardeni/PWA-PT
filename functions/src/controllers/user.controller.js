@@ -29,6 +29,15 @@ const registerUser=(req,res)=>{
         }
     });
 }
+
+const isAuthenticated=(req, res, next)=>{
+    console.log("Uid in auth function ", req.session.uid);
+    if (req.session.uid) {
+        return next();
+    } else {
+        res.status(401).send('You are not authenticated');
+    }
+}
     //Authentication function
 const authLogin=(req,res)=>{
     console.log("Validar inicio de sesion")
@@ -40,6 +49,9 @@ const authLogin=(req,res)=>{
         if (err) throw err;
         //All the info from user is saved in result[0]
         //Compare if the psw got from DB is the same as the one got from the request body
+        req.session.isAdmin = result[0].bandera_administrador == 1;
+        req.session.idUsuario=result[0].idUsuario;
+        console.log(req.session.idUsuario);
         signInWithEmailAndPassword(auth,userEmail, userPsw)
         .then((userCredential) => {
             // Signed in successfully
@@ -52,12 +64,13 @@ const authLogin=(req,res)=>{
             req.session.idUsuario=result[0].idUsuario;
             console.log(req.session.idUsuario);
             req.session.name=result[0].nombre;
-            req.session.save();
+            //req.session.isMagic = true;
+            //req.session.save();
             console.log("Request completo en auth",req.session);
             const idUser = result[0].idUsuario;
-            const showSuccessAlert = 'true';
             //render the dashboardView.pug
-            showDashboard(req, res, idUser, showSuccessAlert); //res is necessary to render the view; result is the object that contains the user info
+            vienedeAuth=true;
+            showDashboard(req, res, idUser, vienedeAuth); //res is necessary to render the view; result is the object that contains the user info
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -115,9 +128,10 @@ const showNode=(req, res, mensaje, accionInsertada='false')=>{
     const userID = req.session.idUsuario; //obtain user id form express session
     console.log("User id en showNode:",userID);
     const esAdmin=req.session.isAdmin;
+    console.log("es admin es: ", esAdmin);
     const medicionesList = [];//create an empty array
     const suminsitrosList = [];//create an empty array
-    readUser.query('SELECT m.* FROM Medicion m JOIN Usuario_tiene_Nodo utn ON m.idNodo = utn.Nodo_idNodo JOIN Usuario u ON utn.Usuario_idUsuario = u.idUsuario WHERE u.idUsuario = ?;', [userID], (req, resultMedicion) => {
+    readUser.query('SELECT * FROM Medicion WHERE idNodo=?;', [nodo], (req, resultMedicion) => {
         //console.log(resultMedicion);
         for (let i = 0; i < resultMedicion.length; i++) {
             //One medicion => one element of the array (i)
@@ -155,6 +169,7 @@ const showNode=(req, res, mensaje, accionInsertada='false')=>{
                     };   
                 
             }//console.log(suminsitrosList);
+            accionInsertada='false';
             res.render('nodesView', { 
                 listMediciones: medicionesList, 
                 listSuministros: suminsitrosList,
@@ -167,7 +182,7 @@ const showNode=(req, res, mensaje, accionInsertada='false')=>{
         
     });  
 }
-const signOutFunction=[isAuthenticated, (req,res)=>{
+/*const signOutFunction=[isAuthenticated, (req,res)=>{
     signOut(auth)
     .then(() => {
         req.session.destroy();
@@ -176,7 +191,15 @@ const signOutFunction=[isAuthenticated, (req,res)=>{
     .catch((error) => {
         res.status(500).send(`Error: ${error.message}`);
     });
-}]
+}]*/
+const signOutFunction=(req,res)=>{
+        res.redirect('/');
+}
+const dashboardUser=(req,res)=>{
+    console.log("Id en dashboard nuevo", req.session.idUsuario); 
+    vienedeAuth=false;
+    showDashboard(req, res, req.session.idUsuario, vienedeAuth);
+}
 
 const restorePsw= (req,res)=>{
     const emailPsw=req.body.emailPsw;
@@ -194,13 +217,8 @@ const addWater=(req,res)=>{
     const tipo_suminsitro = 0;
     const currentDate = new Date();
     console.log("Request completo en addwater ",req.session);
-    if (req.session.idUsuario) {
-        const idUser = req.session.idUsuario; //obtain user id form express session
-        console.log(idUser);
-    } else {
-        console.error("No existe idUser");
-    }
-    
+    const idUser = req.session.idUsuario; //obtain user id form express session
+    console.log(idUser);
     const nodo = req.params.id;
     
     readUser.query('INSERT INTO Suministro (hora, bandera_tipo_suministro, idNodo, idUsuario_ejecutor) VALUES (?, ?, ?, ?);', [currentDate, tipo_suminsitro,nodo ,idUser], (err,result)=>{
@@ -215,7 +233,7 @@ const addWater=(req,res)=>{
                     res.status(500).send("Error al agregar suministro en tabla Suminstro2 en Azure");
                     return;
                 }else{
-                showNode(req, res, '¡Riego exitoso!', 'true');
+                showNode(req, res, '¡Riego registrado!', 'true');
                 }
             });
         }
@@ -239,23 +257,16 @@ const addNPK=(req,res)=>{
                     res.status(500).send("Error al agregar suministro en tabla Suminstro2 en Azure");
                     return;
                 }else{
-                showNode(req, res, '¡Inyección de nutrientes exitosa!', 'true');
+                showNode(req, res, '¡Inyección de nutrientes registrada!', 'true');
                 }
             });
         }
     });
 }
 //Auth Middleware=> verifies if the user is authenticaded (if his uid is in the express session)
-function isAuthenticated(req, res, next) {
-    if (req.session.uid) {
-        return next();
-    } else {
-        res.status(401).send('You are not authenticated');
-    }
-}
 
 
-function showDashboard(req, res, idUser, showSuccessAlert){
+function showDashboard(req, res, idUser, vienedeAuth){
     console.log("idUser en showDashboard", idUser);
     console.log("idUser en showDashboard con session", req.session.idUsuario);
     const userName=req.session.name;
@@ -269,24 +280,31 @@ function showDashboard(req, res, idUser, showSuccessAlert){
                 idNodo:resNodos[i].Nodo_idNodo
             };
         }
-        res.render('dashboardView', {
-            userName:userName,
-            listaNodos:nodosList, 
-            esAdmin : esAdmin,
-            showSuccessAlert:showSuccessAlert
-        });
+        if(vienedeAuth==true){
+            res.render('dashboardView', {
+                userName:userName,
+                listaNodos:nodosList, 
+                esAdmin : esAdmin
+            });
+        }else{
+            res.render('dashboardViewAltern', {
+                userName:userName,
+                listaNodos:nodosList, 
+                esAdmin : esAdmin
+            });
+        }
     });
 }
 
 module.exports = {
     registerUser,
     authLogin,
-    isAuthenticated,
     showInfo,
     showNode,
     signOutFunction,
     restorePsw,
     addWater,
-    addNPK
+    addNPK,
+    dashboardUser
 };
 

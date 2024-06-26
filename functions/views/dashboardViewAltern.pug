@@ -3,25 +3,12 @@ html
     head
         meta(charset='UTF-8')
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title Inicio de Sesion
-        link(href="/img/plant.png" rel="icon")
+        title Proyecto Terminal
         link(href="/css/styles.css" rel="stylesheet")
         link(href="/css/styles-forms.css" rel="stylesheet")
         link(href="/css/styles-footer.css" rel="stylesheet")
         link(href="/css/styles-nav.css" rel="stylesheet")
     body
-        if registro
-            script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
-            script.
-                Swal.fire("¡Registro exitoso!", "", "success").then(() => {
-                    window.location.href = '/log-in'; // Redirige a la página log-in
-                });
-        else if envioCorreo
-            script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
-            script.
-                Swal.fire("Se ha enviado el correo", "", "success").then(() => {
-                    window.location.href = '/log-in'; // Redirige a la página log-in
-                });
         header.header
             nav.nav 
                 .nav-logo-ipn
@@ -32,31 +19,51 @@ html
 
                 ul.nav-menu
                     li 
-                        a(href="/") Inicio 
+                        a(href="/user/log-in/dashboard") Inicio 
+                    if esAdmin == 1
+                        li 
+                            a(href="/user/adminActions") Administrar
+                    li
+                        a(href="./log-in/mySession")
+                            svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16")
+                                path(d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0")
+                                path(fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1")
                     li 
-                        a(href="log-in/register") Registrarse
+                        a(href="/user/log-out") Cerrar sesion 
                 .nav-logo-upiita
                     img(src="/img/Escudo-UPIITA.png" alt="UPIITA" title="Unidad Profesional Interdisciplinaria en Ingeniería y Tecnologías Avanzadas")
+
         main 
-            .forms-container#forms-log-in-container
-                form(id="formUsuario",action="user/log-in", method="post")
-                    .forms  
-                        //h1 = title 
-                        h1 Iniciar sesión
-                        .forms-group
-                            //input(type='email', name='email')
-                            input(type="email" name="email" required="true")
-                            span.bar 
-                            label.forms-label(for="email") Correo
-                        .forms-group
-                            input(type="password" name="contrasenia" required="true")
-                            span.bar 
-                            label.forms-label(for="contrasenia") Contraseña
-                        .forms-group#form-forgotten-password
-                            a(href="./log-in/resetPsw") ¿Olvidaste tu contraseña?
-                        .forms-group
-                            //input(type="submit", name="btnEnviar", value="Enviar")
-                            input(type="submit" name="btnEnviar" class="btn" formnovalidate="formnovalidate" value="Enviar")             
+            .external-container#nodes
+                .internal-container#text
+                    h2 Bienvenido #{userName} 
+                    h3 Nodos:
+                .internal-container#images
+                    if listaNodos.length 
+                        each nodo, index in listaNodos
+                            if nodo.idNodo==2
+                                .node-container
+                                    p Zanahoria 
+                                    a(action="myNode/2", href="myNode/2")
+                                        img(src="/img/carrots.jpg" alt="Zanahoria" title="Zanahoria")
+                            else if nodo.idNodo==3
+                                .node-container
+                                    p Espinaca
+                                    a(action="myNode/3", href="myNode/3")
+                                        img(src="/img/spinach.png" alt="Espinaca" title="Espinaca")
+                            else if nodo.idNodo==4
+                                .node-container
+                                    p Lechuga
+                                    a(action="myNode/4", href="myNode/4")
+                                        img(src="/img/lettuce.jpg" alt="Lechuga" title="Lechuga")
+                            else if nodo.idNodo==5
+                                .node-container
+                                    p Jitomate
+                                    a(action="myNode/5", href="myNode/5") 
+                                        img(src="/img/tomate.png" alt="Jitomate" title="Jitomate")
+                    else
+                        p No hay nodos disponibles
+
         footer.footer 
             .footer-group1
                 .footer-box-1
@@ -77,6 +84,4 @@ html
                 .footer-box-2
                     small Instituto Politécnico Nacional
                         b  2024
-        script(src="/animatedNavBar.js")
-        
-        
+    script(src="/animatedNavBar.js")

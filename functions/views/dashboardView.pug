@@ -9,10 +9,6 @@ html
         link(href="/css/styles-footer.css" rel="stylesheet")
         link(href="/css/styles-nav.css" rel="stylesheet")
     body
-        if showSuccessAlert
-            script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
-            script.
-                Swal.fire('Inicio de sesión exitoso!'); 
         header.header
             nav.nav 
                 .nav-logo-ipn
@@ -22,8 +18,8 @@ html
                         path(fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5")
 
                 ul.nav-menu
-                    li 
-                        a(href="/") Inicio 
+                    //li 
+                        a(href="/user/log-in/dashboard") Inicio 
                     if esAdmin == 1
                         li 
                             a(href="/user/adminActions") Administrar
@@ -47,7 +43,7 @@ html
                         each nodo, index in listaNodos
                             if nodo.idNodo==2
                                 .node-container
-                                    p Zanahoria
+                                    p Zanahoria 
                                     a(action="log-in/myNode/2", href="log-in/myNode/2")
                                         img(src="/img/carrots.jpg" alt="Zanahoria" title="Zanahoria")
                             else if nodo.idNodo==3
@@ -68,21 +64,6 @@ html
                     else
                         p No hay nodos disponibles
 
-            //.external-container 
-                h1 Bienvenido a tu huerto #{usuario} 
-                .internal.container 
-                    input(type="button" value="Zanahorias")
-                        a(href="/log-in/myNode")
-                            img(src="/img/carrots.jpg" alt="Zanahoria" title="Zanahoria")
-                .internal.container 
-                    a(href="/log-in/myNode")
-                        img(src="/img/spinach.png" alt="Espinaca" title="Espinaca")
-                .internal.container 
-                    a(href="/log-in/myNode")
-                        img(src="/img/lettuce.jpg" alt="Lechuga" title="Lechuga")
-                .internal.container 
-                    a(href="/log-in/myNode")
-                        img(src="/img/tomate.png" alt="Jitomate" title="Jitomate")
         footer.footer 
             .footer-group1
                 .footer-box-1
