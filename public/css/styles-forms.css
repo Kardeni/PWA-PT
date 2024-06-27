@@ -141,6 +141,16 @@ input:focus ~ .bar::before{
     border-radius: 5px;
 }
 
+.forms-container input.btnAction{
+    background-color: var(--color9) !important;
+    color: white !important;
+    /*width: 60%;
+    margin: 5px auto;*/
+    border: none !important;
+    border-radius: 5px !important;
+    overflow: visible !important;
+}
+
 @media screen and (max-width: 769px) {
     .forms-container.forms-container#forms-log-in-container form{
         width: 90%; 

@@ -207,3 +207,11 @@ main{
     border-color: var(--color4) !important;
     color: var(--color1) !important; /* Cambia esto si necesitas cambiar el color del texto */
 }
+
+.external-container .internal-container form input.btnActions{
+    margin: 10px;
+    padding: 15px;
+    background-color: var(--color9);
+    color: var(--color10);
+    border: 3px solid red;
+}

@@ -10,6 +10,8 @@ html
         link(href="/css/styles-forms.css" rel="stylesheet")
         link(href="/css/styles-footer.css" rel="stylesheet")
         link(href="/css/styles-nav.css" rel="stylesheet")
+        //DataTables
+        link(href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" rel="stylesheet")
     body
         if accionInsertada
             script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
@@ -48,32 +50,82 @@ html
 
         main 
             .external-container
+                h1 Mi huerto 
                 .internal-container 
-                    h1 Mi huerto  
                     h2 Mediciones:
+                    p
                         if listMediciones.length 
+                            table#medicionesTable.display(class="cell-border compact stripe")
+                                thead
+                                    tr
+                                        th ID
+                                        th Hora
+                                        th Temperatura
+                                        th Humedad
+                                        th Nitrógeno
+                                        th Potasio
+                                        th Fósforo
+                                tbody
+                                    each medicion in listMediciones
+                                        tr
+                                            td= medicion.idMedicion
+                                            td= medicion.hora
+                                            td= medicion.temp
+                                            td= medicion.humedad
+                                            td= medicion.n
+                                            td= medicion.p
+                                            td= medicion.k
+                        else
+                            p No hay mediciones disponibles
+                    h2 Suministros:
+                    p
+                        if listSuministros.length 
+                            table#suministrosTable.display
+                                thead
+                                    tr
+                                        th ID
+                                        th Hora
+                                        th Tipo
+                                        th Usuario Ejecutor
+                                tbody
+                                    each suministro in listSuministros
+                                        tr
+                                            td= suministro.idSuministro
+                                            td= suministro.hora
+                                            td= suministro.tipo
+                                            td= suministro.idUsuario_ejecutor
+                        else
+                            p No hay suministros disponibles
+                        //if listMediciones.length 
                             each medicion, index in listMediciones
                                 div
                                     span.medicion-info
                                         p= "Medicion: "+medicion.idMedicion +  " Hora: "+medicion.hora+" temperatura: "+medicion.temp+" humedad: "+medicion.humedad+" nitrogeno: "+medicion.n+" potasio: "+medicion.p+" fosoforo: "+medicion.k  
-                                    
-                        else
+                        //else
                             p No hay mediciones disponibles
-
-                    h2 Suministros:
+                    //h2 Suministros:
                         if listSuministros.length 
                             each suministro, index in listSuministros
                                 div
                                     span.suministro-info
-                                        p= "Suministro: " +suministro.idSuministro  + " Hora: "+suministro.hora+" Tipo: "+suministro.tipo+ "Usuario ejecutor:" + suministro.idUsuario_ejecutor
-                                    
+                                        p= "Suministro: " +suministro.idSuministro  + " Hora: "+suministro.hora+" Tipo: "+suministro.tipo+ "Usuario ejecutor:" + suministro.idUsuario_ejecutor   
                         else
                             p No hay suministros disponibles
                 .internal-container 
-                    form(id="formRiego", action=`/user/log-in/myNode/addWater/${nodo}`, method="post")
-                        input(type="submit", name="btnAddWater", value="Regar")
-                    form(id="formInyeccionNPK", action=`/user/log-in/myNode/addNPK/${nodo}`, method="post")
-                        input(type="submit", name="btnAddNPK", value="Inyectar nutrientes")
+                    .forms-container
+                        form(id="formRiego", action=`/user/log-in/myNode/addWater/${nodo}`, method="post")
+                            .forms  
+                                .forms-group
+                                    input(type="submit" name="btnAddWater" value="Regar" class="btnAction")
+                    .forms-container
+                        form(id="formInyeccionNPK", action=`/user/log-in/myNode/addNPK/${nodo}`, method="post")
+                            .forms  
+                                .forms-group
+                                    input(type="submit" name="btnAddNPK" value="Inyectar nutrientes" class="btnAction")
+                    //form(id="formRiego", action=`/user/log-in/myNode/addWater/${nodo}`, method="post")
+                        input(type="submit" name="btnAddWater" value="Regar" class="btnActions")
+                    //form(id="formInyeccionNPK", action=`/user/log-in/myNode/addNPK/${nodo}`, method="post")
+                        input(type="submit" name="btnAddNPK" value="Inyectar nutrientes" class="btnActions")
 
         footer.footer 
             .footer-group1
@@ -83,15 +135,134 @@ html
                     hr
                     p Presentado por: 
                     p Benitez Quiroz Karla Denisse 
-                    p Gallegos Salinas Emilio
+                    p Gallegos Salinas Emilio 
                 .footer-box-2
-                    p GitHub
-                    hr
                     .footer-icon
-                        a(href="https://github.com/EmilioGS/WSN-PT" target="_blank")
+                        a(href="https://github.com/Kardeni" target="_blank")
                             svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16")
                                 path(d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8") 
             .footer-group2
-                small Instituto Politécnico Nacional
-                    b  2024
+                .footer-box-1
+                    img(src="/img/plant.png" alt="Planta" title="Planta" width="22px")
+                .footer-box-2
+                    small Instituto Politécnico Nacional
+                        b  2024
     script(src="/animatedNavBar.js")
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+    script(src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js")
+    script.
+        $(document).ready(function() {
+            // Configuración para la tabla de Mediciones
+            $('#medicionesTable').DataTable({
+                "language": {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros por página",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "Ningún dato disponible en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                "columnDefs": [{
+                    "targets": 1, // La fecha es la segunda columna
+                    "render": function (data, type, row) {
+                        var date = new Date(data);
+                        var month = date.toLocaleString('en-US', { month: 'short' });
+                        var day = date.getDate();
+                        var time = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+                        var meses = {
+                            'Jan': 'Enero',
+                            'Feb': 'Febrero',
+                            'Mar': 'Marzo',
+                            'Apr': 'Abril',
+                            'May': 'Mayo',
+                            'Jun': 'Junio',
+                            'Jul': 'Julio',
+                            'Aug': 'Agosto',
+                            'Sep': 'Septiembre',
+                            'Oct': 'Octubre',
+                            'Nov': 'Noviembre',
+                            'Dec': 'Diciembre'
+                        };
+
+                        var monthName = meses[month];
+
+                        var formattedDate = monthName + ' ' + day + ' ' + time;
+                        return formattedDate;
+                    }
+                }]
+            });
+
+            // Configuración para la tabla de Suministros
+            $('#suministrosTable').DataTable({
+                "language": {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros por página",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "Ningún dato disponible en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                "columnDefs": [{
+                    "targets": 1, // La fecha es la segunda columna
+                    "render": function (data, type, row) {
+                        var date = new Date(data);
+                        var month = date.toLocaleString('en-US', { month: 'short' });
+                        var day = date.getDate();
+                        var time = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+                        var meses = {
+                            'Jan': 'Enero',
+                            'Feb': 'Febrero',
+                            'Mar': 'Marzo',
+                            'Apr': 'Abril',
+                            'May': 'Mayo',
+                            'Jun': 'Junio',
+                            'Jul': 'Julio',
+                            'Aug': 'Agosto',
+                            'Sep': 'Septiembre',
+                            'Oct': 'Octubre',
+                            'Nov': 'Noviembre',
+                            'Dec': 'Diciembre'
+                        };
+
+                        var monthName = meses[month];
+
+                        var formattedDate = monthName + ' ' + day + ' ' + time;
+                        return formattedDate;
+                    }
+                }]
+            });
+        });
