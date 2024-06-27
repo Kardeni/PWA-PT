@@ -9,6 +9,12 @@ html
         link(href="/css/styles-footer.css" rel="stylesheet")
         link(href="/css/styles-nav.css" rel="stylesheet")
     body
+        if registro
+            script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
+            script.
+                Swal.fire("¡Registro exitoso!", "", "success").then(() => {
+                    window.location.href = '/log-in'; // Redirige a la página log-in
+                });
         if envioCorreo
             script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
             script.

@@ -81,7 +81,8 @@ main{
     color: var(--color1);
     border-radius: 10px;
     align-items: center;
-    border: 3px solid red;
+    align-content: center;
+    width: 150px ;
 }
 
 .main-button-container#anchor a{
@@ -93,7 +94,6 @@ main{
     display: flex;
     align-items: center;
     padding: 15px;
-    border: 3px solid red;
 }
 
 @media screen and (max-width: 768px) {

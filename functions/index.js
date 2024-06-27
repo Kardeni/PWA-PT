@@ -142,15 +142,19 @@ app.post("/update-sensor", (req,res)=>{
 exports.app = functions.https.onRequest(app);
 
 function queryDatabase(node, sensorTemp, sensorHum, sensorPH,N,P,K){
-    var hoy = new Date();
+    /*var hoy = new Date();
     var dd = hoy.getDate();
     var mm = hoy.getMonth()+1;
     var yyyy = hoy.getFullYear();
     var hora = hoy.getHours();
     var min = hoy.getMinutes();
-    var segu = hoy.getSeconds();
+    var segu = hoy.getSeconds();*/
+    const cdmxTime = getCDMXTime();
 
-    var tiempo = yyyy+"-"+mm+"-"+dd+" "+hora+":"+min+":"+segu;
+    // Formatear la fecha y hora para el INSERT
+    const tiempo = cdmxTime.toISOString().slice(0, 19).replace('T', ' ');
+    
+    //var tiempo = yyyy+"-"+mm+"-"+dd+" "+hora+":"+min+":"+segu;
     //INSERT INTO Medicion (hora, ph, temp, humedad, nitrogeno, potasio, fosforo,  idNodo) VALUES ('2024-05-21 21:37:30', '5', '28', '70', '20', '78', '90', '1'); VALUES (?, ?, ?, ?);', [currentDate, tipo_suminsitro,nodo ,idUser], (err,result)
     conn.query('INSERT INTO Medicion (hora, ph, temp, humedad, nitrogeno, potasio, fosforo,  idNodo)  VALUES (?, ?, ?, ?,?,?,?,?);', [tiempo, sensorPH, sensorTemp, sensorHum, N, P, K, node],
         function (err, results, fields) {
@@ -159,3 +163,13 @@ function queryDatabase(node, sensorTemp, sensorHum, sensorPH,N,P,K){
         }
     )
 };
+
+// Función para obtener la hora de CDMX
+function getCDMXTime() {
+    let now = new Date();
+    let utcOffset = now.getTimezoneOffset() * 60000; // Convertir minutos a milisegundos
+    let utcTime = now.getTime() + utcOffset;
+    let cdmxOffset = -6 * 3600000; // UTC-6:00 para CDMX
+    let cdmxTime = new Date(utcTime + cdmxOffset);
+    return cdmxTime;
+}
