@@ -19,7 +19,8 @@ const registerUser=(req,res)=>{
                 // Registered successfully
                 const user = userCredential.user;
                 const registro = 'true';
-                res.render('log-in',{registro:registro});
+                res.render('index',{registro:registro});
+                registro = 'false';
             })
             .catch((error) => {
                 const errorCode = error.code;
