@@ -149,6 +149,8 @@ input:focus ~ .bar::before{
     border: none !important;
     border-radius: 5px !important;
     overflow: visible !important;
+    padding: 15px;
+    margin: 10px auto;
 }
 
 @media screen and (max-width: 769px) {

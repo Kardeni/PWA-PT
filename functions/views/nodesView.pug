@@ -38,7 +38,7 @@ html
                     if esAdmin == 1
                         li 
                             a(href="/user/adminActions") Administrar
-                    li
+                    //li
                         a(href="/user/log-in/mySession")
                             svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16")
                                 path(d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0")
@@ -111,21 +111,21 @@ html
                                         p= "Suministro: " +suministro.idSuministro  + " Hora: "+suministro.hora+" Tipo: "+suministro.tipo+ "Usuario ejecutor:" + suministro.idUsuario_ejecutor   
                         else
                             p No hay suministros disponibles
-                .internal-container 
-                    .forms-container
-                        form(id="formRiego", action=`/user/log-in/myNode/addWater/${nodo}`, method="post")
-                            .forms  
-                                .forms-group
-                                    input(type="submit" name="btnAddWater" value="Regar" class="btnAction")
-                    .forms-container
-                        form(id="formInyeccionNPK", action=`/user/log-in/myNode/addNPK/${nodo}`, method="post")
-                            .forms  
-                                .forms-group
-                                    input(type="submit" name="btnAddNPK" value="Inyectar nutrientes" class="btnAction")
-                    //form(id="formRiego", action=`/user/log-in/myNode/addWater/${nodo}`, method="post")
-                        input(type="submit" name="btnAddWater" value="Regar" class="btnActions")
-                    //form(id="formInyeccionNPK", action=`/user/log-in/myNode/addNPK/${nodo}`, method="post")
-                        input(type="submit" name="btnAddNPK" value="Inyectar nutrientes" class="btnActions")
+            .external-container#btnActionsContainer    
+                .forms-container
+                    form(id="formRiego", action=`/user/log-in/myNode/addWater/${nodo}`, method="post")
+                        .forms  
+                            .forms-group
+                                input(type="submit" name="btnAddWater" value="Regar" class="btnAction")
+                .forms-container
+                    form(id="formInyeccionNPK", action=`/user/log-in/myNode/addNPK/${nodo}`, method="post")
+                        .forms  
+                            .forms-group
+                                input(type="submit" name="btnAddNPK" value="Inyectar nutrientes" class="btnAction")
+                //form(id="formRiego", action=`/user/log-in/myNode/addWater/${nodo}`, method="post")
+                    input(type="submit" name="btnAddWater" value="Regar" class="btnActions")
+                //form(id="formInyeccionNPK", action=`/user/log-in/myNode/addNPK/${nodo}`, method="post")
+                    input(type="submit" name="btnAddNPK" value="Inyectar nutrientes" class="btnActions")
 
         footer.footer 
             .footer-group1

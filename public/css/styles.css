@@ -208,10 +208,9 @@ main{
     color: var(--color1) !important; /* Cambia esto si necesitas cambiar el color del texto */
 }
 
-.external-container .internal-container form input.btnActions{
-    margin: 10px;
-    padding: 15px;
-    background-color: var(--color9);
-    color: var(--color10);
-    border: 3px solid red;
+.external-container#btnActionsContainer{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
